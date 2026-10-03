@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Permaculture Farm</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f7ee;color:#203b25;line-height:1.6}
+header{background:linear-gradient(135deg,#145a2a,#45a049);color:white;text-align:center;padding:35px 15px}
+header h1{font-size:32px;margin:0 0 10px}
+header p{font-size:17px;margin:0}
+nav{background:#103d20;padding:12px;text-align:center;overflow-x:auto;white-space:nowrap;position:sticky;top:0;z-index:10}
+.menu-toggle{display:none;background:transparent;border:0;color:white;font-size:30px;cursor:pointer;padding:4px 10px;line-height:1;position:relative;z-index:20}
+.menu-toggle span{display:block;width:28px;height:3px;background:white;margin:5px auto;border-radius:3px}
+nav.menu-open a{display:block;margin:5px auto;max-width:260px}
+
+nav a{color:white;text-decoration:none;display:inline-block;padding:10px 14px;margin:2px;border-radius:8px;font-size:15px}
+nav a:hover{background:#45a049}
+.hero{background:linear-gradient(135deg,#2b7938,#3f9147);color:white;text-align:center;padding:65px 20px}
+.hero h2{font-size:30px;color:white;margin:0 0 18px}
+.hero p{color:white;font-size:17px;max-width:700px;margin:auto}
+section{padding:45px 18px;max-width:1000px;margin:auto}
+section h2{color:#267238;text-align:center;font-size:28px;margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card{background:white;padding:22px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,.12);border-top:5px solid #45a049}
+.card h3{color:#267238;margin-top:0;font-size:20px}
+.farm-plan,.loop{background:#e3f1df;padding:25px;border-radius:15px}
+.farm-area{background:white;padding:18px;margin-bottom:15px;border-radius:10px}
+.farm-area:last-child{margin-bottom:0}
+.loop{text-align:center}
+.loop-item{background:white;padding:15px;margin:10px auto;max-width:650px;border-radius:10px;box-shadow:0 2px 7px rgba(0,0,0,.08)}
+.arrow{color:#267238;font-size:22px}
+footer{background:#103d20;color:white;text-align:center;padding:30px 15px}
+footer h2{color:white;margin-top:0}
+@media(max-width:600px){
+.menu-toggle{display:block;position:absolute;left:8px;top:7px;margin:0;width:46px;height:42px;padding:4px 8px}
+nav a{display:none}
+nav{overflow:visible;text-align:center;padding:7px;min-height:56px;position:sticky;top:0}
+header h1{font-size:27px}
+.hero{padding:60px 18px}
+.hero h2{font-size:29px}
+nav a{font-size:14px;padding:9px 12px}
+section{padding:40px 15px}
+}
+</style>
+
+<style>
+.info-card, .card {
+  cursor: pointer;
+}
+.info-card:hover, .card:hover {
+  transform: translateY(-4px);
+}
+.info-card::after, .card::after {
+  content: "Tap for more information";
+  display: block;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+#infoModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.72);
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+}
+#infoModal.show {
+  display: flex;
+}
+.modal-box {
+  width: min(720px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #fff;
+  color: #222;
+  border-radius: 18px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.modal-box h2 {
+  margin: 0 45px 14px 0;
+}
+.modal-box p {
+  line-height: 1.65;
+}
+.modal-box ul {
+  padding-left: 22px;
+  line-height: 1.6;
+}
+.close-btn {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: #eee;
+  font-size: 22px;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  #infoModal { padding: 10px; }
+  .modal-box { padding: 20px; border-radius: 15px; }
+}
+</style>
+
+
+<style id="article-system-style">
+.read-article-btn{margin-top:12px;padding:10px 15px;border:0;border-radius:10px;cursor:pointer;font-weight:600;background:#2f7d32;color:#fff}.article-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.75);padding:10px;align-items:center;justify-content:center}.article-modal.show{display:flex}.article-box{background:#fff;color:#222;width:min(850px,100%);max-height:94vh;overflow:auto;border-radius:18px;padding:26px;box-sizing:border-box}.article-box h1{margin-top:0;color:#245b28}.article-box h2{margin-top:24px;border-bottom:1px solid #ddd;padding-bottom:7px}.article-box p,.article-box li{line-height:1.7}.article-close{float:right;border:0;border-radius:50%;width:40px;height:40px;font-size:24px;cursor:pointer}.article-tag{display:inline-block;margin:4px 4px 0 0;padding:4px 8px;border-radius:12px;background:#e8f5e9;font-size:12px}
+</style>
+
+
+<style id="working-mobile-menu">
+/* Working mobile menu */
+.menu-toggle {
+  position: fixed !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 99999 !important;
+  width: 48px !important;
+  height: 48px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: #1b5e20 !important;
+  color: white !important;
+  font-size: 28px !important;
+  line-height: 48px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,.25) !important;
+  padding: 0 !important;
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 14px;
+  z-index: 99998;
+  width: min(260px, calc(100vw - 28px));
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  padding: 8px;
+}
+.mobile-menu.open { display: block !important; }
+.mobile-menu a {
+  display: block;
+  padding: 13px 14px;
+  margin: 2px 0;
+  border-radius: 9px;
+  color: #222;
+  text-decoration: none;
+  font-weight: 600;
+}
+.mobile-menu a:hover,
+.mobile-menu a:active { background: #e8f5e9; }
+</style>
+
+
+<style id="v5-modern-css">
+/* ===== V5 MODERN FARM WEBSITE ===== */
+:root{
+  --v5-green:#1b5e20;
+  --v5-green2:#43a047;
+  --v5-light:#f1f8e9;
+  --v5-dark:#17351d;
+  --v5-shadow:0 12px 35px rgba(20,70,30,.14);
+}
+.v5-wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.v5-section{padding:55px 0}
+.v5-title{text-align:center;font-size:clamp(25px,5vw,38px);color:var(--v5-green);margin:0 0 10px}
+.v5-subtitle{text-align:center;color:#607064;max-width:700px;margin:0 auto 28px;line-height:1.6}
+
+/* Slider */
+.v5-slider{position:relative;overflow:hidden;border-radius:24px;box-shadow:var(--v5-shadow);background:#17351d}
+.v5-slides{display:flex;transition:transform .55s ease}
+.v5-slide{min-width:100%;height:430px;position:relative;display:flex;align-items:flex-end;padding:35px;box-sizing:border-box;background-size:cover;background-position:center}
+.v5-slide:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.72))}
+.v5-slide-content{position:relative;z-index:1;color:#fff;max-width:700px}
+.v5-slide-content h2{font-size:clamp(30px,6vw,52px);margin:0 0 10px}
+.v5-slide-content p{font-size:17px;line-height:1.55;margin:0 0 18px}
+.v5-btn{display:inline-block;border:0;border-radius:999px;padding:11px 18px;background:#fff;color:var(--v5-green);font-weight:700;text-decoration:none;cursor:pointer}
+.v5-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;border:0;border-radius:50%;width:42px;height:42px;background:rgba(255,255,255,.9);color:var(--v5-green);font-size:25px;cursor:pointer}
+.v5-prev{left:12px}.v5-next{right:12px}
+.v5-dots{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:7px}
+.v5-dot{width:9px;height:9px;border:0;border-radius:50%;padding:0;background:rgba(255,255,255,.55);cursor:pointer}
+.v5-dot.active{background:#fff;transform:scale(1.25)}
+
+/* Stats */
+.v5-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:25px}
+.v5-stat{background:#fff;border-radius:18px;padding:22px;text-align:center;box-shadow:var(--v5-shadow);transition:.25s}
+.v5-stat:hover{transform:translateY(-5px)}
+.v5-stat strong{display:block;font-size:31px;color:var(--v5-green);margin-bottom:5px}
+.v5-stat span{color:#65736a}
+
+/* Feature cards */
+.v5-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.v5-card{background:#fff;border-radius:20px;padding:22px;box-shadow:var(--v5-shadow);transition:transform .25s,box-shadow .25s}
+.v5-card:hover{transform:translateY(-7px);box-shadow:0 17px 40px rgba(20,70,30,.18)}
+.v5-icon{font-size:36px}
+.v5-card h3{margin:9px 0 6px;color:var(--v5-green)}
+.v5-card p{line-height:1.6;color:#56635a}
+
+/* Gallery */
+.v5-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.v5-gallery button{border:0;padding:0;border-radius:15px;overflow:hidden;cursor:pointer;background:#ddd;aspect-ratio:1}
+.v5-gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.v5-gallery button:hover img{transform:scale(1.08)}
+.v5-lightbox{display:none;position:fixed;inset:0;z-index:100010;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:18px}
+.v5-lightbox.open{display:flex}
+.v5-lightbox img{max-width:94vw;max-height:84vh;border-radius:14px}
+.v5-lb-close{position:absolute;right:18px;top:14px;background:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:25px;cursor:pointer}
+
+/* Interactive map */
+.v5-map{position:relative;min-height:470px;border-radius:24px;overflow:hidden;background:
+  radial-gradient(circle at 20% 20%,#c8e6c9 0 12%,transparent 13%),
+  radial-gradient(circle at 75% 25%,#a5d6a7 0 15%,transparent 16%),
+  linear-gradient(135deg,#dcedc8,#b9dca6 48%,#d7e8bd);
+box-shadow:var(--v5-shadow);border:5px solid #fff}
+.v5-map:before{content:"";position:absolute;inset:25px;border:2px dashed rgba(27,94,32,.35);border-radius:30% 45% 35% 50%}
+.v5-zone{position:absolute;border:0;border-radius:50%;min-width:76px;min-height:76px;padding:8px;background:#fff;color:var(--v5-green);font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.16);cursor:pointer;transition:.25s;z-index:2}
+.v5-zone:hover{transform:scale(1.08)}
+.v5-zone span{display:block;font-size:12px;margin-top:3px}
+.v5-zone[data-zone="house"]{left:43%;top:38%}
+.v5-zone[data-zone="food"]{left:13%;top:22%}
+.v5-zone[data-zone="pond"]{right:10%;top:18%}
+.v5-zone[data-zone="animals"]{left:15%;bottom:17%}
+.v5-zone[data-zone="solar"]{right:16%;bottom:17%}
+.v5-zone[data-zone="vegetables"]{left:42%;bottom:10%}
+.v5-map-info{position:absolute;left:15px;right:15px;bottom:15px;background:rgba(255,255,255,.93);backdrop-filter:blur(8px);border-radius:15px;padding:13px 16px;z-index:4;box-shadow:0 4px 15px rgba(0,0,0,.12)}
+.v5-map-info b{color:var(--v5-green)}
+
+/* Scroll reveal */
+.v5-reveal{opacity:0;transform:translateY(25px);transition:opacity .65s ease,transform .65s ease}
+.v5-reveal.v5-visible{opacity:1;transform:none}
+
+/* Timeline */
+.v5-timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.v5-step{position:relative;background:#fff;border-radius:16px;padding:18px;box-shadow:var(--v5-shadow);text-align:center}
+.v5-step b{display:inline-flex;width:35px;height:35px;border-radius:50%;align-items:center;justify-content:center;background:var(--v5-green);color:#fff}
+
+/* Responsive */
+@media(max-width:760px){
+  .v5-slide{height:390px;padding:25px 22px}
+  .v5-stats{grid-template-columns:repeat(2,1fr)}
+  .v5-grid{grid-template-columns:1fr}
+  .v5-gallery{grid-template-columns:repeat(2,1fr)}
+  .v5-timeline{grid-template-columns:1fr 1fr}
+  .v5-map{min-height:430px}
+}
+</style>
+
+
+<style id="v5-articles-css">
+.v5-articles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.v5-article-card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 10px 28px rgba(20,70,30,.12);border:1px solid #edf3ed;transition:.25s}
+.v5-article-card:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(20,70,30,.18)}
+.v5-article-card .tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#e8f5e9;color:#1b5e20;font-size:12px;font-weight:700}
+.v5-article-card h3{color:#1b5e20;margin:12px 0 8px}
+.v5-article-card p{color:#5d6a61;line-height:1.65}
+.v5-read{border:0;border-radius:999px;padding:10px 16px;background:#1b5e20;color:#fff;font-weight:700;cursor:pointer}
+.v5-importance{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:25px}
+.v5-importance .imp{background:linear-gradient(145deg,#f8fff7,#eef8ec);border-radius:18px;padding:20px;text-align:center;border:1px solid #dcebd9}
+.v5-importance .imp-icon{font-size:34px}
+.v5-importance h3{color:#1b5e20;margin:8px 0}
+.v5-importance p{color:#5d6a61;line-height:1.55;margin:0}
+.v5-article-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100020;padding:12px;align-items:center;justify-content:center}
+.v5-article-modal.open{display:flex}
+.v5-article-box{background:#fff;width:min(850px,100%);max-height:92vh;overflow:auto;border-radius:22px;padding:28px;position:relative;color:#26352a}
+.v5-article-box h2{color:#1b5e20;margin-top:0}
+.v5-article-box h3{color:#2e7d32;margin-top:24px}
+.v5-article-box p,.v5-article-box li{line-height:1.75}
+.v5-article-close{position:absolute;right:14px;top:14px;border:0;background:#e8f5e9;color:#1b5e20;border-radius:50%;width:40px;height:40px;font-size:24px;cursor:pointer}
+@media(max-width:760px){
+ .v5-articles{grid-template-columns:1fr}
+ .v5-importance{grid-template-columns:1fr 1fr}
+ .v5-article-box{padding:23px}
+}
+</style>
+
+</head>
+<body>
+
+<button type="button" class="menu-toggle" id="menuToggle"
+        aria-label="Open menu" aria-expanded="false">☰</button>
+
+<nav class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#home">Home</a>
+  <a href="#about">About Farm</a>
+  <a href="#design">Farm Design</a>
+  <a href="#crops">Crops</a>
+  <a href="#water">Water Management</a>
+  <a href="#animals">Animals</a>
+  <a href="#soil">Soil & Compost</a>
+  <a href="#articles">Articles</a>
+</nav>
+
+
+<header>
+<h1>🌱 My Permaculture Farm</h1>
+<p>A Sustainable • Productive • Self-Reliant Farm System</p>
+</header>
+
+<nav id="mainNav">
+
+<a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#design">Farm Design</a>
+<a href="#crops">Crops</a>
+<a href="#water">Water</a>
+<a href="#animals">Animals</a>
+<a href="#soil">Soil</a>
+<a href="#plans">Farm Plans</a>
+<a href="#loop">Farm Cycle</a>
+</nav>
+
+<div class="hero" id="home">
+<h2>🌿 Farming With Nature</h2>
+<p>A connected farm system where plants, animals, water, soil and energy work together.</p>
+
+<div class="home-buttons">
+<a href="#design">Explore Farm Design</a>
+<a href="#crops">Explore Crops</a>
+</div>
+</div>
+
+<section class="welcome-home">
+<h2>🌱 Welcome to Our Farm</h2>
+
+<p>
+This project presents a model permaculture farm designed to work with
+nature instead of working against it. The farm combines food production,
+water conservation, soil building, renewable energy, animals and
+biodiversity into one connected system.
+</p>
+
+<div class="home-highlights">
+
+<div class="highlight">
+<div class="big-icon">🌳</div>
+<h3>Food Forest</h3>
+<p>Fruit trees, useful plants and crops arranged as a diverse growing system.</p>
+</div>
+
+<div class="highlight">
+<div class="big-icon">💧</div>
+<h3>Save Water</h3>
+<p>Rainwater harvesting, swales and a pond help manage water resources.</p>
+</div>
+
+<div class="highlight">
+<div class="big-icon">🌱</div>
+<h3>Healthy Soil</h3>
+<p>Compost, vermicompost and organic matter help build productive soil.</p>
+</div>
+
+<div class="highlight">
+<div class="big-icon">🐄</div>
+<h3>Integrated Animals</h3>
+<p>Animals can contribute food, manure and useful resources to the farm.</p>
+</div>
+
+</div>
+</section>
+
+<section id="about">
+<h2>🌍 About Our Farm</h2>
+<p>Our permaculture farm is designed as an integrated agricultural ecosystem. The aim is to produce food while conserving soil, water, energy and biodiversity.</p>
+<div class="cards" data-info-title="Sustainable Farming" data-info="&lt;p&gt;Sustainable farming aims to produce food while caring for soil, water, biodiversity and other farm resources.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Uses resources carefully.&lt;/li&gt;&lt;li&gt;Encourages healthy soil and useful biodiversity.&lt;/li&gt;&lt;li&gt;Can combine crops, trees, animals and water systems.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🌱 Sustainable Farming</h3><p>The farm uses resources carefully and aims to reduce unnecessary waste.</p></div>
+<div class="card" data-info-title="Biodiversity" data-info="&lt;p&gt;Biodiversity means having a variety of plants, animals and useful organisms on the farm.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Different plants can provide food and habitat.&lt;/li&gt;&lt;li&gt;Flowering plants can support pollinators.&lt;/li&gt;&lt;li&gt;A diverse farm can create a more balanced ecosystem.&lt;/li&gt;&lt;/ul&gt;"><h3>🌳 Biodiversity</h3><p>Trees, crops, animals and beneficial organisms are connected within the farm system.</p></div>
+<div class="card" data-info-title="Resource Recycling" data-info="&lt;p&gt;Resource recycling means using farm by-products again instead of treating everything as waste.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Plant residues can become compost or mulch.&lt;/li&gt;&lt;li&gt;Animal manure can be managed as an organic soil amendment.&lt;/li&gt;&lt;li&gt;Water can be collected and reused where appropriate.&lt;/li&gt;&lt;/ul&gt;"><h3>♻️ Resource Recycling</h3><p>Organic materials can be converted into compost and returned to the soil.</p></div>
+<div class="card" data-info-title="Closed-Loop System" data-info="&lt;p&gt;A closed-loop farm tries to connect different parts of the farm so that useful outputs from one part can support another.&lt;/p&gt;&lt;p&gt;For example, crop residues may contribute to compost, while compost supports soil and crop production.&lt;/p&gt;"><h3>🔄 Closed-Loop System</h3><p>Different farm activities are connected so useful resources can circulate within the farm.</p></div>
+</div>
+</section>
+
+<section id="design">
+<h2>🗺️ Farm Design</h2>
+<div class="cards" data-info-title="Farm House" data-info="&lt;p&gt;The farm house is the living and working centre of the farm.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can include storage and a small work area.&lt;/li&gt;&lt;li&gt;Can be planned near important farm access routes.&lt;/li&gt;&lt;li&gt;Solar power and rainwater systems can be integrated into the design.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🏡 Farm House</h3><p>A farm house can be positioned for convenient access to gardens, water systems and other farm areas.</p></div>
+<div class="card" data-info-title="Food Forest" data-info="&lt;p&gt;A food forest is a layered planting system that combines trees, shrubs, herbs and other useful plants.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Fruit trees form the upper layer.&lt;/li&gt;&lt;li&gt;Lower layers can include shrubs, herbs and ground covers.&lt;/li&gt;&lt;li&gt;Plant selection should match the local climate, soil and available water.&lt;/li&gt;&lt;/ul&gt;"><h3>🌳 Food Forest</h3><p>A multi-layered food-producing area containing fruit trees and other useful plants.</p></div>
+<div class="card" data-info-title="Vegetable Garden" data-info="&lt;p&gt;A vegetable garden provides a dedicated area for seasonal vegetables and herbs.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Crop rotation can help vary what is planted in each area.&lt;/li&gt;&lt;li&gt;Mulching can help protect soil moisture.&lt;/li&gt;&lt;li&gt;Choose crops according to season and local growing conditions.&lt;/li&gt;&lt;/ul&gt;"><h3>🥬 Vegetable Garden</h3><p>Vegetables and herbs can be grown in productive garden areas.</p></div>
+<div class="card" data-info-title="Animal Area" data-info="&lt;p&gt;The animal area is planned so livestock and poultry can be managed safely and hygienically.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provide shade, shelter, clean water and suitable feed.&lt;/li&gt;&lt;li&gt;Keep animal housing clean and well ventilated.&lt;/li&gt;&lt;li&gt;Manage manure responsibly for possible composting or soil use.&lt;/li&gt;&lt;/ul&gt;"><h3>🐄 Animal Area</h3><p>Cattle, poultry and guinea fowl can be incorporated into suitable managed areas.</p></div>
+<div class="card" data-info-title="Water Zone" data-info="&lt;p&gt;The water zone can include rainwater collection, swales and a farm pond.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Water systems should be designed around the land&#x27;s natural slope.&lt;/li&gt;&lt;li&gt;Keep stored water protected from contamination.&lt;/li&gt;&lt;li&gt;Use appropriate overflow and drainage planning.&lt;/li&gt;&lt;/ul&gt;"><h3>💧 Water Zone</h3><p>Rainwater harvesting, swales and a farm pond can form the water-management system.</p></div>
+<div class="card" data-info-title="Solar Energy" data-info="&lt;p&gt;Solar panels can provide renewable electricity for suitable farm needs.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can support lighting, pumps and selected equipment.&lt;/li&gt;&lt;li&gt;Panel placement should consider sunlight and shading.&lt;/li&gt;&lt;li&gt;Electrical installation should be done safely by a qualified person.&lt;/li&gt;&lt;/ul&gt;"><h3>☀️ Solar Energy</h3><p>Solar panels can provide renewable electricity for suitable farm requirements.</p></div>
+</div>
+</section>
+
+<section id="crops">
+<h2>🌾 Crops & Food Forest</h2>
+<div class="cards" data-info-title="Food Forest" data-info="&lt;p&gt;A food forest is a layered planting system that combines trees, shrubs, herbs and other useful plants.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Fruit trees form the upper layer.&lt;/li&gt;&lt;li&gt;Lower layers can include shrubs, herbs and ground covers.&lt;/li&gt;&lt;li&gt;Plant selection should match the local climate, soil and available water.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🥭 Mango</h3><p>A long-term fruit tree for the food forest.</p></div>
+<div class="card" data-info-title="Guava" data-info="&lt;p&gt;Guava is a fruit crop that can fit well into a mixed orchard or food-forest system.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Produces edible fruit.&lt;/li&gt;&lt;li&gt;Can be combined with other compatible plants.&lt;/li&gt;&lt;li&gt;Pruning and water management depend on the growing conditions.&lt;/li&gt;&lt;/ul&gt;"><h3>🍈 Guava</h3><p>A productive fruit tree for an orchard system.</p></div>
+<div class="card" data-info-title="Banana" data-info="&lt;p&gt;Banana is a fast-growing tropical crop that can occupy a lower or mid-level position in some food-forest designs.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Needs adequate water and nutrients.&lt;/li&gt;&lt;li&gt;Large leaves can contribute organic matter when managed properly.&lt;/li&gt;&lt;li&gt;Plant spacing should allow good airflow and access.&lt;/li&gt;&lt;/ul&gt;"><h3>🍌 Banana</h3><p>A useful fruit crop that can also contribute biomass.</p></div>
+<div class="card" data-info-title="Lemon" data-info="&lt;p&gt;Lemon is a citrus fruit crop that can be included in a mixed orchard where climate and soil are suitable.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Requires good sunlight.&lt;/li&gt;&lt;li&gt;Good drainage is important.&lt;/li&gt;&lt;li&gt;Regular observation helps identify pests or disease early.&lt;/li&gt;&lt;/ul&gt;"><h3>🍋 Lemon</h3><p>A useful fruit crop for mixed planting.</p></div>
+<div class="card" data-info-title="Drumstick" data-info="&lt;p&gt;Drumstick, or moringa, is a useful multipurpose tree whose leaves and pods are commonly used as food.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can be used as part of a diversified farm planting.&lt;/li&gt;&lt;li&gt;Grows well in warm conditions.&lt;/li&gt;&lt;li&gt;Needs suitable spacing and pruning for manageable growth.&lt;/li&gt;&lt;/ul&gt;"><h3>🌿 Drumstick</h3><p>A multipurpose tree providing food and biomass.</p></div>
+<div class="card" data-info-title="Food Forest" data-info="&lt;p&gt;A food forest is a layered planting system that combines trees, shrubs, herbs and other useful plants.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Fruit trees form the upper layer.&lt;/li&gt;&lt;li&gt;Lower layers can include shrubs, herbs and ground covers.&lt;/li&gt;&lt;li&gt;Plant selection should match the local climate, soil and available water.&lt;/li&gt;&lt;/ul&gt;"><h3>🍈 Papaya</h3><p>A fast-growing fruit crop for the food forest.</p></div>
+</div>
+</section>
+
+<section id="water">
+<h2>💧 Water Management</h2>
+<div class="cards" data-info-title="Rainwater Harvesting" data-info="&lt;p&gt;Rainwater harvesting collects rainfall for later use or controlled infiltration.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Roof water can be directed into suitable storage or recharge systems.&lt;/li&gt;&lt;li&gt;First-flush and filtration arrangements may be useful depending on the intended use.&lt;/li&gt;&lt;li&gt;Storage should be kept clean and covered where appropriate.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🌧️ Rainwater Harvesting</h3><p>Rainwater can be collected and directed towards storage or infiltration areas.</p></div>
+<div class="card" data-info-title="Swales" data-info="&lt;p&gt;A swale is a shallow, level or near-level landscape feature designed to slow and spread runoff so water can infiltrate the soil.&lt;/p&gt;&lt;p&gt;Its design must suit the site&#x27;s slope, rainfall, soil and drainage conditions. Professional assessment is useful for larger earthworks.&lt;/p&gt;"><h3>〰️ Swales</h3><p>Swales can slow surface runoff and encourage water infiltration into the soil.</p></div>
+<div class="card" data-info-title="Farm Pond" data-info="&lt;p&gt;A farm pond can store water for farm use and may also provide habitat when designed and managed appropriately.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Choose a suitable location based on soil, catchment and safety.&lt;/li&gt;&lt;li&gt;Plan overflow and erosion protection.&lt;/li&gt;&lt;li&gt;Keep livestock access controlled when needed.&lt;/li&gt;&lt;/ul&gt;"><h3>🐟 Farm Pond</h3><p>A pond can store water and provide habitat for aquatic organisms.</p></div>
+<div class="card" data-info-title="Fish &amp; Duck" data-info="&lt;p&gt;Fish and ducks can sometimes be integrated around a farm pond as part of a diversified farm system.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Water quality must be monitored.&lt;/li&gt;&lt;li&gt;Animal welfare and biosecurity are important.&lt;/li&gt;&lt;li&gt;Stocking decisions should match pond size, species and local conditions.&lt;/li&gt;&lt;/ul&gt;"><h3>🦆 Fish & Duck System</h3><p>Fish and ducks can be incorporated into a properly managed pond system.</p></div>
+</div>
+</section>
+
+<section id="animals">
+<h2>🐄 Animals & Biodiversity</h2>
+<div class="cards" data-info-title="Cattle" data-info="&lt;p&gt;Cattle can be part of an integrated farm system when there is enough space, feed, water and proper animal care.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provide clean drinking water and shelter.&lt;/li&gt;&lt;li&gt;Maintain hygienic housing.&lt;/li&gt;&lt;li&gt;Manure can be managed as a farm resource where appropriate.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🐄 Cattle</h3><p>Cattle can provide manure that may be processed into compost and other farm inputs.</p></div>
+<div class="card" data-info-title="Poultry" data-info="&lt;p&gt;Poultry can provide eggs or meat and can be integrated into a diversified farm plan.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provide secure housing and clean water.&lt;/li&gt;&lt;li&gt;Maintain hygiene and biosecurity.&lt;/li&gt;&lt;li&gt;Protect birds from predators and extreme weather.&lt;/li&gt;&lt;/ul&gt;"><h3>🐔 Poultry</h3><p>Poultry can provide farm products while their manure can become a useful resource.</p></div>
+<div class="card" data-info-title="Biodiversity" data-info="&lt;p&gt;Biodiversity means having a variety of plants, animals and useful organisms on the farm.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Different plants can provide food and habitat.&lt;/li&gt;&lt;li&gt;Flowering plants can support pollinators.&lt;/li&gt;&lt;li&gt;A diverse farm can create a more balanced ecosystem.&lt;/li&gt;&lt;/ul&gt;"><h3>🐦 Guinea Fowl</h3><p>Guinea fowl can form part of the farm's poultry and biodiversity system.</p></div>
+<div class="card" data-info-title="Beekeeping" data-info="&lt;p&gt;Beekeeping can add another productive element to a diversified farm and supports pollination of many flowering plants.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Hives should be placed where bees and people can coexist safely.&lt;/li&gt;&lt;li&gt;Local beekeeping guidance and species selection matter.&lt;/li&gt;&lt;li&gt;Regular hive observation is important.&lt;/li&gt;&lt;/ul&gt;"><h3>🐝 Beekeeping</h3><p>Bees can support pollination while providing honey and other bee products.</p></div>
+</div>
+</section>
+
+<section id="soil">
+<h2>🌱 Soil Management</h2>
+<div class="cards" data-info-title="Compost" data-info="&lt;p&gt;Compost is made by controlled decomposition of suitable organic materials.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;It can recycle plant residues and other suitable organic matter.&lt;/li&gt;&lt;li&gt;A well-managed pile needs appropriate moisture and aeration.&lt;/li&gt;&lt;li&gt;Finished compost can contribute organic matter to soil.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>♻️ Compost</h3><p>Organic materials can be decomposed into compost and returned to the soil.</p></div>
+<div class="card" data-info-title="Compost" data-info="&lt;p&gt;Compost is made by controlled decomposition of suitable organic materials.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;It can recycle plant residues and other suitable organic matter.&lt;/li&gt;&lt;li&gt;A well-managed pile needs appropriate moisture and aeration.&lt;/li&gt;&lt;li&gt;Finished compost can contribute organic matter to soil.&lt;/li&gt;&lt;/ul&gt;"><h3>🪱 Vermicompost</h3><p>Earthworms help process suitable organic materials into vermicompost.</p></div>
+<div class="card" data-info-title="Jeevamrut" data-info="&lt;p&gt;Jeevamrut is a traditional fermented liquid input used in some natural-farming practices.&lt;/p&gt;&lt;p&gt;Its preparation and use vary between farming systems. It should be treated as a farm input rather than a guaranteed replacement for every nutrient or crop-protection need.&lt;/p&gt;"><h3>🌿 Jeevamrut</h3><p>A traditional liquid preparation used in some natural farming systems.</p></div>
+<div class="card" data-info-title="Beejamrut" data-info="&lt;p&gt;Beejamrut is a traditional seed-treatment preparation used in some natural-farming systems.&lt;/p&gt;&lt;p&gt;Practices vary by farmer and region. Seed treatment should be compatible with the crop and seed supplier&#x27;s recommendations.&lt;/p&gt;"><h3>🌱 Beejamrut</h3><p>A traditional preparation used for seed treatment in some natural farming practices.</p></div>
+<div class="card" data-info-title="Hugelkultur" data-info="&lt;p&gt;Hugelkultur is a bed-building approach that incorporates woody material and organic matter beneath the growing layer.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;It can be used to create raised growing areas.&lt;/li&gt;&lt;li&gt;Material choice and local climate affect performance.&lt;/li&gt;&lt;li&gt;The bed should be designed to avoid waterlogging and pest problems.&lt;/li&gt;&lt;/ul&gt;"><h3>🍂 Hugelkultur</h3><p>A technique using woody material and organic matter to build soil structure.</p></div>
+<div class="card" data-info-title="Sanjeevni Khat" data-info="&lt;p&gt;Sanjeevni Khat is a term used for certain organic/natural soil-input practices. The exact preparation can differ between sources.&lt;/p&gt;&lt;p&gt;For a project website, it is best to describe the method used by your chosen reference rather than present one recipe as universal.&lt;/p&gt;"><h3>🌾 Sanjeevni Khat</h3><p>Can be included as part of the farm's natural soil-input system.</p></div>
+</div>
+</section>
+
+<section>
+<h2>🌳 Support Trees & Living Boundaries</h2>
+<div class="cards" data-info-title="Gliricidia" data-info="&lt;p&gt;Gliricidia is a fast-growing multipurpose tree often used in tropical agroforestry.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can provide biomass for mulching or other farm uses.&lt;/li&gt;&lt;li&gt;Can be managed as a support or boundary plant.&lt;/li&gt;&lt;li&gt;Planting should consider local suitability and management needs.&lt;/li&gt;&lt;/ul&gt;">
+<div class="card"><h3>🌿 Gliricidia</h3><p>A multipurpose tree that can provide biomass.</p></div>
+<div class="card" data-info-title="Subabul" data-info="&lt;p&gt;Subabul is a fast-growing leguminous tree used in some agroforestry and fodder systems.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can contribute biomass and shade.&lt;/li&gt;&lt;li&gt;Needs appropriate management and spacing.&lt;/li&gt;&lt;li&gt;Local suitability should be checked before large-scale planting.&lt;/li&gt;&lt;/ul&gt;"><h3>🌿 Subabul</h3><p>A multipurpose tree that can contribute biomass and useful farm resources.</p></div>
+<div class="card" data-info-title="Biodiversity" data-info="&lt;p&gt;Biodiversity means having a variety of plants, animals and useful organisms on the farm.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Different plants can provide food and habitat.&lt;/li&gt;&lt;li&gt;Flowering plants can support pollinators.&lt;/li&gt;&lt;li&gt;A diverse farm can create a more balanced ecosystem.&lt;/li&gt;&lt;/ul&gt;"><h3>🌳 Neem</h3><p>A multipurpose tree that can contribute to farm biodiversity.</p></div>
+<div class="card" data-info-title="Bamboo" data-info="&lt;p&gt;Bamboo can be useful for farm structures, wind protection and biomass depending on the species.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Select a species suitable for the site.&lt;/li&gt;&lt;li&gt;Plan its spread and maintenance.&lt;/li&gt;&lt;li&gt;Harvesting should be managed sustainably.&lt;/li&gt;&lt;/ul&gt;"><h3>🎋 Bamboo</h3><p>Can be incorporated into suitable boundary areas.</p></div>
+<div class="card" data-info-title="Biodiversity" data-info="&lt;p&gt;Biodiversity means having a variety of plants, animals and useful organisms on the farm.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Different plants can provide food and habitat.&lt;/li&gt;&lt;li&gt;Flowering plants can support pollinators.&lt;/li&gt;&lt;li&gt;A diverse farm can create a more balanced ecosystem.&lt;/li&gt;&lt;/ul&gt;"><h3>🌿 Moringa</h3><p>A multipurpose tree providing food, biomass and biodiversity benefits.</p></div>
+<div class="card" data-info-title="Live Fencing" data-info="&lt;p&gt;Live fencing uses living plants as a boundary instead of relying only on built fencing.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Can provide habitat and biomass.&lt;/li&gt;&lt;li&gt;Choose non-invasive, locally suitable species.&lt;/li&gt;&lt;li&gt;Regular trimming may be needed to maintain the boundary.&lt;/li&gt;&lt;/ul&gt;"><h3>🌿 Live Fencing</h3><p>Parusa and nirgudi can be considered for living boundaries where suitable.</p></div>
+</div>
+</section>
+
+<section id="plans">
+<h2>📐 Farm Plans</h2>
+<div class="farm-plan">
+<div class="farm-area"><h3>🌱 1-Acre Farm</h3><p>A compact system can combine a food forest, vegetable garden, composting, water management, small livestock areas and a pond where feasible.</p></div>
+<div class="farm-area"><h3>🌳 5-Acre Farm</h3><p>A larger system can provide more space for food forests, orchards, livestock, water bodies, windbreaks, solar infrastructure and biodiversity.</p></div>
+<div class="farm-area"><h3>📌 Important</h3><p>The final layout should depend on land shape, soil, rainfall, water availability, slope and farm requirements.</p></div>
+</div>
+</section>
+
+<section id="loop">
+<h2>🔄 Closed-Loop Farm System</h2>
+<div class="loop">
+<div class="loop-item">🌧️ Rain falls on the farm</div>
+<div class="arrow">↓</div>
+<div class="loop-item">💧 Water is captured and stored</div>
+<div class="arrow">↓</div>
+<div class="loop-item">🌱 Plants use water and nutrients</div>
+<div class="arrow">↓</div>
+<div class="loop-item">🌾 Crops produce food and biomass</div>
+<div class="arrow">↓</div>
+<div class="loop-item">🐄 Animals produce manure</div>
+<div class="arrow">↓</div>
+<div class="loop-item">♻️ Organic materials become compost</div>
+<div class="arrow">↓</div>
+<div class="loop-item">🌱 Compost supports healthy soil</div>
+<div class="arrow">↓</div>
+<div class="loop-item">🔄 New plants grow and the cycle continues</div>
+</div>
+</section>
+
+<section>
+<h2>🌍 Our Vision</h2>
+<p>Our goal is to create an integrated farm that produces food while conserving soil, water and biodiversity. Plants, animals, water, energy and soil are connected parts of one farm ecosystem.</p>
+<p><strong>🌱 Grow Food • Restore Soil • Save Water • Work With Nature</strong></p>
+</section>
+
+<footer>
+<h2>🌱 My Permaculture Farm</h2>
+<p>A sustainable farm begins with good design.</p>
+<p>© 2026 My Permaculture Farm</p>
+</footer>
+
+
+<div id="infoModal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="close-btn" id="closeInfoBtn" aria-label="Close">×</button>
+    <h2 id="modalTitle"></h2>
+    <div id="modalContent"></div>
+  </div>
+</div>
+<script>
+(function () {
+  const modal = document.getElementById("infoModal");
+  const title = document.getElementById("modalTitle");
+  const content = document.getElementById("modalContent");
+  const closeBtn = document.getElementById("closeInfoBtn");
+
+  document.querySelectorAll("[data-info-title]").forEach(function(card) {
+    card.classList.add("info-card");
+    card.setAttribute("tabindex", "0");
+
+    function openCard() {
+      title.textContent = card.getAttribute("data-info-title") || "Information";
+      content.innerHTML = card.getAttribute("data-info") || "<p>More information coming soon.</p>";
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    card.addEventListener("click", openCard);
+    card.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openCard();
+      }
+    });
+  });
+
+  function closeModal() {
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", function(e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeModal();
+  });
+})();
+</script>
+
+
+<div id="articleModal" class="article-modal" aria-hidden="true">
+  <div class="article-box">
+    <button class="article-close" id="articleClose" aria-label="Close article">×</button>
+    <div id="articleBody"></div>
+  </div>
+</div>
+
+<script id="article-system-script">
+(function(){\nconst articles={\n  "food forest":{title:"Food Forest",summary:"A food forest is a diversified planting system that combines useful trees, shrubs, herbs, climbers and ground-level plants in layers, using space in a way that resembles a natural ecosystem.",history:"Traditional farming communities have long used mixed tree-and-crop systems. The modern food-forest idea brings these ecological principles into a planned garden or farm system.",detail:"A food forest can include tall fruit trees, smaller trees and shrubs, herbs, groundcovers and climbers. Different plants occupy different heights, while the exact design depends on local climate, soil, sunlight, water and available space.",components:["Upper tree layer","Small trees and shrubs","Herbaceous plants","Ground layer","Climbers and vines"],benefits:["Creates plant diversity","Uses vertical space efficiently","Provides different kinds of farm produce","Can provide habitat for useful organisms"],farm:"In our farm design, the food forest can form a major production zone connected with composting, water harvesting and other farm activities.",considerations:"Plant selection, spacing, sunlight, soil conditions, rainfall and water availability should be considered before planting."},\n  "rainwater harvesting":{title:"Rainwater Harvesting",summary:"Rainwater harvesting means collecting and directing rainwater so that part of it can be stored or allowed to infiltrate into the soil for later use.",history:"Collecting rainwater is an old practice used in many dry and seasonal-rainfall regions. Modern farms combine traditional collection methods with tanks, ponds, channels and infiltration structures.",detail:"On a farm, rainfall can be collected from roofs and suitable surfaces, while field runoff can be slowed and directed into infiltration or storage areas. The design must match rainfall, soil and land slope.",components:["Roof-water collection","Storage tanks","Farm ponds","Contour or infiltration structures","Overflow and safe drainage"],benefits:["Improves water availability","Can reduce uncontrolled runoff","Supports soil moisture conservation","Makes better use of seasonal rainfall"],farm:"Rainwater harvesting can supply water to suitable farm uses and recharge soil moisture when designed correctly.",considerations:"Storage, overflow, mosquito control, water quality and safe placement should be planned carefully."},\n  "swales":{title:"Swales",summary:"Swales are shallow, level or near-level landscape features designed to slow and spread runoff so water can infiltrate into the soil.",history:"Contour-based water management has been used in traditional agriculture for centuries. The term swale is commonly used in modern permaculture and regenerative-landscape design.",detail:"A swale is generally placed along the contour rather than straight down a slope. It can reduce the speed of surface water and encourage infiltration, subject to local soil and rainfall conditions.",components:["Contour alignment","Shallow depression or channel","Raised soil bank where appropriate","Vegetation","Safe overflow route"],benefits:["Slows runoff","Can improve infiltration","May reduce erosion","Can support nearby planting"],farm:"Swales can be part of the farm water-management zone and may work together with a pond, tree planting and ground cover.",considerations:"Correct layout matters. Poorly designed earthworks can cause erosion or unwanted water accumulation, so local site conditions should be assessed."},\n  "farm pond":{title:"Farm Pond",summary:"A farm pond is a small water-storage body constructed or maintained on agricultural land for uses such as irrigation, livestock support or ecological purposes, depending on design and local rules.",history:"Farm ponds have been used for generations to store seasonal water. Modern farm planning combines ponds with runoff management and water conservation.",detail:"A pond can collect suitable runoff and provide a reserve of water. Its size, depth, embankment, inlet, outlet and safety arrangements depend on the site.",components:["Catchment area","Pond basin","Inlet","Outlet or spillway","Protective planting and fencing where needed"],benefits:["Stores seasonal water","Can support farm activities","May create aquatic habitat","Can work with wider water-management planning"],farm:"The farm pond can connect the water zone with irrigation planning, fish or duck areas where appropriate, and nearby planting.",considerations:"Pond construction should account for soil, seepage, embankment stability, overflow, water quality and local regulations."},\n  "compost":{title:"Compost",summary:"Compost is decomposed organic material produced under managed conditions and used as a soil amendment.",history:"Composting is an ancient way of returning plant and other suitable organic residues to the soil. Today it is widely used in gardens and farms as part of nutrient recycling.",detail:"A compost pile or system combines suitable organic materials with moisture and air. Microorganisms break down the material over time. Finished compost is dark and crumbly and should be used appropriately rather than treated as a complete fertiliser replacement in every situation.",components:["Dry carbon-rich materials","Fresh green materials","Moisture","Air/turning","Time and decomposition"],benefits:["Recycles organic residues","Adds organic matter to soil","Supports soil structure","Can reduce some farm waste"],farm:"Compost can receive suitable crop residues and other organic material from the farm and return the finished compost to fields and gardens.",considerations:"Avoid contaminated materials. Maintain suitable moisture and aeration, and allow the compost to mature before use."},\n  "beekeeping":{title:"Beekeeping",summary:"Beekeeping is the managed care of honey-bee colonies for honey and other products and for pollination services.",history:"Humans have collected honey for thousands of years. Managed beekeeping developed into organised hive systems in many regions.",detail:"A beekeeper provides suitable hive space, monitors colony condition and manages the colony according to local beekeeping practices. Flowering plants around a farm can provide forage, while bees can contribute to pollination of suitable crops.",components:["Bee colonies","Hives","Forage plants","Water source","Regular monitoring"],benefits:["Produces honey and other hive products","Can support pollination","Adds biodiversity to a farm system","Can connect livestock-free enterprise with crop production"],farm:"The farm can include flowering plants and a suitable beekeeping area away from busy paths and other sensitive zones.",considerations:"Bee stings and allergies are important safety concerns. Proper protective equipment, training and responsible hive placement are necessary."},\n  "mango":{title:"Mango",summary:"Mango is a tropical fruit tree valued for its edible fruit and long-term place in Indian agriculture and culture.",history:"Mango has been cultivated in South Asia for centuries and has a long history in Indian horticulture. Many regional varieties have developed through selection and cultivation.",detail:"Mango trees need suitable climate, soil drainage, sunlight and space. Young trees require establishment care, while mature trees can become large and need planned spacing.",components:["Suitable variety","Well-drained soil","Sunlight","Water during establishment as needed","Canopy and orchard management"],benefits:["Provides fruit","Can be a long-term tree crop","Adds tree diversity to a farm"],farm:"Mango can occupy the upper tree layer of a food forest or a planned orchard zone, with lower plants selected according to shade and root competition.",considerations:"Choose varieties suited to the local climate and available space, and manage pests, diseases and irrigation according to local horticultural guidance."},\n  "1-acre farm":{title:"1-Acre Farm Plan",summary:"A 1-acre integrated farm plan divides limited land into connected zones for crops, trees, water, soil improvement and selected farm activities.",history:"Small farms have traditionally combined crops, livestock, trees and household resources. Modern integrated-farm planning organises these elements according to land, water, labour and market conditions.",detail:"A one-acre design should begin with site assessment. The exact percentage given to each zone should not be fixed without knowing the plot shape, soil, water, slope and goals.",components:["Food forest or orchard zone","Vegetable and seasonal crop area","Water-management zone","Compost and soil-care area","Animal or poultry area where suitable","Paths and utility space"],benefits:["Connects different farm activities","Can recycle some resources internally","Makes small land easier to organise","Supports diversified production"],farm:"Our 1-acre concept can use the food forest as a core zone and connect water harvesting, composting, vegetables, animals and renewable energy where practical.",considerations:"Land allocation must be adjusted to the actual site. Food production, animal housing, access, sanitation and water needs should be planned together."},\n  "5-acre farm":{title:"5-Acre Farm Plan",summary:"A 5-acre farm provides more room for separate but connected zones such as orchards, food forest, field crops, water systems, livestock and infrastructure.",history:"Diversified farms have historically combined multiple enterprises across larger land areas. Modern planning uses zoning and resource-flow ideas to connect these enterprises.",detail:"A five-acre design can separate high-use areas from larger tree and field zones. The final layout should be based on the site's climate, soil, topography, water and the farmer's objectives.",components:["Food forest/orchard","Field or vegetable production","Water bodies and harvesting structures","Animal areas","Compost and resource-recycling area","Farm house and utility space"],benefits:["Allows greater zoning flexibility","Can support more diverse enterprises","Provides room for ecological buffers and tree systems","Can connect multiple resource flows"],farm:"The 5-acre concept can expand the same closed-loop idea used on the smaller plan while keeping practical access, water management and farm operations in mind.",considerations:"A larger area also means more management, infrastructure and maintenance. Expansion should be planned according to available labour, capital and water."}\n};\nconst modal=document.getElementById('articleModal'), body=document.getElementById('articleBody'), close=document.getElementById('articleClose');\nfunction esc(x){return String(x).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));}\nfunction showArticle(a){const x=articles[a.toLowerCase()]; if(!x)return; body.innerHTML=`<h1>${esc(x.title)}</h1><div><span class="article-tag">Summary</span><span class="article-tag">History</span><span class="article-tag">Farm application</span></div><h2>1. Summary</h2><p>${esc(x.summary)}</p><h2>2. History</h2><p>${esc(x.history)}</p><h2>3. Detailed Information</h2><p>${esc(x.detail)}</p><h2>4. Main Components / Types</h2><ul>${x.components.map(v=>`<li>${esc(v)}</li>`).join('')}</ul><h2>5. Benefits &amp; Importance</h2><ul>${x.benefits.map(v=>`<li>${esc(v)}</li>`).join('')}</ul><h2>6. How It Fits Into Our Farm</h2><p>${esc(x.farm)}</p><h2>7. Important Considerations</h2><p>${esc(x.considerations)}</p><h2>8. Conclusion</h2><p>This topic is one part of an integrated farm system. Its usefulness depends on the site's conditions, good planning and appropriate management.</p>`; modal.classList.add('show'); modal.setAttribute('aria-hidden','false');}\nfunction hide(){modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}\nclose.addEventListener('click',hide); modal.addEventListener('click',e=>{if(e.target===modal)hide()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
+const menuToggle=document.getElementById('menuToggle');
+const mainNav=document.getElementById('mainNav');
+if(menuToggle && mainNav){
+  menuToggle.addEventListener('click',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    const open=mainNav.classList.toggle('menu-open');
+    menuToggle.setAttribute('aria-expanded',open?'true':'false');
+    menuToggle.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu');
+  });
+  mainNav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      mainNav.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded','false');
+      menuToggle.setAttribute('aria-label','Open navigation menu');
+    });
+  });
+}\nfunction norm(s){return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}\nconst aliases={'food forest':'food forest','rainwater harvesting':'rainwater harvesting','rain water harvesting':'rainwater harvesting','swale':'swales','swales':'swales','farm pond':'farm pond','pond':'farm pond','compost':'compost','beekeeping':'beekeeping','bee keeping':'beekeeping','mango':'mango','1 acre farm':'1-acre farm','1 acre':'1-acre farm','5 acre farm':'5-acre farm','5 acre':'5-acre farm'};\ndocument.querySelectorAll('.card,.info-card').forEach(card=>{const text=norm(card.innerText);let key=null;for(const k in aliases){if(text.includes(k)){key=aliases[k];break}}if(key&&articles[key]){const b=document.createElement('button');b.className='read-article-btn';b.type='button';b.textContent='Read Full Article →';b.addEventListener('click',e=>{e.stopPropagation();showArticle(key)});card.appendChild(b);}});\n})();
+</script>
+
+
+<script id="working-mobile-menu-js">
+(function () {
+  function initMenu() {
+    var btn = document.getElementById("menuToggle");
+    var menu = document.getElementById("mobileMenu");
+    if (!btn || !menu) return;
+
+    btn.onclick = function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var open = menu.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      btn.textContent = open ? "×" : "☰";
+      menu.setAttribute("aria-hidden", open ? "false" : "true");
+    };
+
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        menu.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Open menu");
+        btn.textContent = "☰";
+        menu.setAttribute("aria-hidden", "true");
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!menu.contains(e.target) && e.target !== btn) {
+        menu.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Open menu");
+        btn.textContent = "☰";
+        menu.setAttribute("aria-hidden", "true");
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMenu);
+  } else {
+    initMenu();
+  }
+})();
+</script>
+
+
+<!-- V5 MODERN FARM SECTIONS -->
+<section class="v5-section v5-wrap v5-reveal" id="v5-modern">
+  <h2 class="v5-title">🌱 A Modern Sustainable Farm</h2>
+  <p class="v5-subtitle">Explore the farm through slides, interactive zones, visual galleries and connected systems.</p>
+
+  <div class="v5-slider" id="v5Slider">
+    <div class="v5-slides" id="v5Slides">
+      <div class="v5-slide" style="background-image:url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=80')">
+        <div class="v5-slide-content">
+          <h2>🌳 Food Forest</h2>
+          <p>A diverse planting system with trees, shrubs, herbs and ground-level plants.</p>
+          <a class="v5-btn" href="#v5-map">Explore Farm Map →</a>
+        </div>
+      </div>
+      <div class="v5-slide" style="background-image:url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=80')">
+        <div class="v5-slide-content">
+          <h2>💧 Water-Smart Design</h2>
+          <p>Rainwater harvesting, swales and a pond can be planned as connected water features.</p>
+          <a class="v5-btn" href="#v5-map">See Water Zone →</a>
+        </div>
+      </div>
+      <div class="v5-slide" style="background-image:url('https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?auto=format&fit=crop&w=1400&q=80')">
+        <div class="v5-slide-content">
+          <h2>♻️ Closed-Loop Thinking</h2>
+          <p>Connect crops, animals, compost and soil management into a resource-recycling system.</p>
+          <a class="v5-btn" href="#v5-gallery">View Gallery →</a>
+        </div>
+      </div>
+    </div>
+    <button class="v5-arrow v5-prev" id="v5Prev" aria-label="Previous slide">‹</button>
+    <button class="v5-arrow v5-next" id="v5Next" aria-label="Next slide">›</button>
+    <div class="v5-dots" id="v5Dots"></div>
+  </div>
+
+  <div class="v5-stats">
+    <div class="v5-stat"><strong data-v5-count="1">0</strong><span>Acre Concept</span></div>
+    <div class="v5-stat"><strong data-v5-count="5">0</strong><span>Acre Expansion</span></div>
+    <div class="v5-stat"><strong data-v5-count="6">0</strong><span>Farm Zones</span></div>
+    <div class="v5-stat"><strong data-v5-count="4">0</strong><span>Core Systems</span></div>
+  </div>
+</section>
+
+<section class="v5-section v5-wrap v5-reveal" id="v5-map">
+  <h2 class="v5-title">🗺️ Interactive Farm Map</h2>
+  <p class="v5-subtitle">Tap any zone to see what it represents.</p>
+  <div class="v5-map" id="v5FarmMap">
+    <button class="v5-zone" data-zone="house">🏠<span>Farm House</span></button>
+    <button class="v5-zone" data-zone="food">🌳<span>Food Forest</span></button>
+    <button class="v5-zone" data-zone="pond">💧<span>Pond</span></button>
+    <button class="v5-zone" data-zone="animals">🐄<span>Animals</span></button>
+    <button class="v5-zone" data-zone="solar">☀️<span>Solar</span></button>
+    <button class="v5-zone" data-zone="vegetables">🥕<span>Vegetables</span></button>
+    <div class="v5-map-info" id="v5MapInfo"><b>Farm Map:</b> Tap a zone to explore it.</div>
+  </div>
+</section>
+
+<section class="v5-section v5-wrap v5-reveal" id="v5-gallery">
+  <h2 class="v5-title">📸 Farm Gallery</h2>
+  <p class="v5-subtitle">A visual collection of the farm's major themes.</p>
+  <div class="v5-gallery">
+    <button data-v5-img="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=85"><img loading="lazy" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=75" alt="Green plants"></button>
+    <button data-v5-img="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=85"><img loading="lazy" src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=75" alt="Vegetable field"></button>
+    <button data-v5-img="https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?auto=format&fit=crop&w=1400&q=85"><img loading="lazy" src="https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?auto=format&fit=crop&w=600&q=75" alt="Farm landscape"></button>
+    <button data-v5-img="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=1400&q=85"><img loading="lazy" src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=600&q=75" alt="Plants and trees"></button>
+  </div>
+</section>
+
+<section class="v5-section v5-wrap v5-reveal">
+  <h2 class="v5-title">🔄 Farm Systems</h2>
+  <p class="v5-subtitle">The major parts work as connected zones rather than isolated features.</p>
+  <div class="v5-grid">
+    <article class="v5-card"><div class="v5-icon">🌳</div><h3>Food Forest</h3><p>Layers of useful plants can make efficient use of vertical growing space and support biodiversity.</p></article>
+    <article class="v5-card"><div class="v5-icon">💧</div><h3>Water System</h3><p>Rainwater harvesting, swales and pond planning can be considered together with the site's drainage.</p></article>
+    <article class="v5-card"><div class="v5-icon">♻️</div><h3>Soil & Compost</h3><p>Compost and organic matter management can return nutrients and carbon-containing material to the soil.</p></article>
+  </div>
+</section>
+
+<section class="v5-section v5-wrap v5-reveal">
+  <h2 class="v5-title">📅 Farm Development Journey</h2>
+  <div class="v5-timeline">
+    <div class="v5-step"><b>1</b><h3>Plan</h3><p>Observe land, water and sunlight.</p></div>
+    <div class="v5-step"><b>2</b><h3>Prepare</h3><p>Build soil and water structures.</p></div>
+    <div class="v5-step"><b>3</b><h3>Plant</h3><p>Establish trees and useful crops.</p></div>
+    <div class="v5-step"><b>4</b><h3>Connect</h3><p>Link animals, compost and crops.</p></div>
+    <div class="v5-step"><b>5</b><h3>Maintain</h3><p>Observe, adapt and improve.</p></div>
+  </div>
+</section>
+
+<div class="v5-lightbox" id="v5Lightbox" aria-hidden="true">
+  <button class="v5-lb-close" id="v5LbClose" aria-label="Close gallery">×</button>
+  <img id="v5LbImage" alt="Farm gallery preview">
+</div>
+
+
+<script id="v5-modern-js">
+(function(){
+  /* Slider */
+  var slides = document.getElementById("v5Slides");
+  var dots = document.getElementById("v5Dots");
+  var prev = document.getElementById("v5Prev");
+  var next = document.getElementById("v5Next");
+  var index = 0, timer;
+  if(slides && dots){
+    var count = slides.children.length;
+    for(let i=0;i<count;i++){
+      var d=document.createElement("button");
+      d.className="v5-dot"+(i===0?" active":"");
+      d.setAttribute("aria-label","Go to slide "+(i+1));
+      d.onclick=function(){go(i);};
+      dots.appendChild(d);
+    }
+    function go(i){
+      index=(i+count)%count;
+      slides.style.transform="translateX(-"+(index*100)+"%)";
+      dots.querySelectorAll(".v5-dot").forEach(function(x,n){x.classList.toggle("active",n===index);});
+    }
+    if(prev) prev.onclick=function(){go(index-1);reset();};
+    if(next) next.onclick=function(){go(index+1);reset();};
+    function start(){timer=setInterval(function(){go(index+1);},5000);}
+    function reset(){clearInterval(timer);start();}
+    start();
+  }
+
+  /* Animated counters */
+  document.querySelectorAll("[data-v5-count]").forEach(function(el){
+    var target=Number(el.getAttribute("data-v5-count"));
+    var done=false;
+    function animate(){
+      if(done)return; done=true;
+      var n=0, step=Math.max(1,Math.ceil(target/18));
+      var t=setInterval(function(){
+        n=Math.min(target,n+step); el.textContent=n+(target===1||target===5?"":"");
+        if(n>=target)clearInterval(t);
+      },45);
+    }
+    var ob=new IntersectionObserver(function(es){if(es[0].isIntersecting){animate();ob.disconnect();}});
+    ob.observe(el);
+  });
+
+  /* Map */
+  var mapInfo=document.getElementById("v5MapInfo");
+  var zoneText={
+    house:"Farm House: a central living/service area that can be planned with access to water, paths and other zones.",
+    food:"Food Forest: a diverse planting area using trees, shrubs, herbs, climbers and ground-level plants.",
+    pond:"Farm Pond: a water-storage feature whose location and capacity should be designed for the site's rainfall and drainage.",
+    animals:"Animal Area: space for cattle, poultry, guinea fowl and other planned livestock, with hygiene and waste management.",
+    solar:"Solar Zone: an area for solar panels where suitable, with attention to orientation, shading and electrical safety.",
+    vegetables:"Vegetable Garden: an area for seasonal vegetables, paths, irrigation access and regular harvesting."
+  };
+  document.querySelectorAll(".v5-zone").forEach(function(z){
+    z.onclick=function(){
+      var key=z.getAttribute("data-zone");
+      if(mapInfo) mapInfo.innerHTML="<b>"+z.textContent.trim().replace(/^[^A-Za-z]+/,"")+":</b> "+zoneText[key];
+    };
+  });
+
+  /* Gallery lightbox */
+  var lb=document.getElementById("v5Lightbox"), lbImg=document.getElementById("v5LbImage"), lbClose=document.getElementById("v5LbClose");
+  document.querySelectorAll("[data-v5-img]").forEach(function(btn){
+    btn.onclick=function(){lbImg.src=btn.getAttribute("data-v5-img");lb.classList.add("open");lb.setAttribute("aria-hidden","false");};
+  });
+  function closeLb(){lb.classList.remove("open");lb.setAttribute("aria-hidden","true");lbImg.src="";}
+  if(lbClose)lbClose.onclick=closeLb;
+  if(lb)lb.onclick=function(e){if(e.target===lb)closeLb();};
+
+  /* Scroll reveal */
+  var reveals=document.querySelectorAll(".v5-reveal");
+  if("IntersectionObserver" in window){
+    var ro=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v5-visible");ro.unobserve(e.target);}});
+    },{threshold:.12});
+    reveals.forEach(function(e){ro.observe(e);});
+  }else{reveals.forEach(function(e){e.classList.add("v5-visible");});}
+})();
+</script>
+
+
+<section class="v5-section v5-wrap v5-reveal" id="v5-articles">
+  <h2 class="v5-title">📚 Farm Articles & Knowledge</h2>
+  <p class="v5-subtitle">Learn the idea, background, components, importance and practical considerations behind each part of the farm.</p>
+
+  <div class="v5-articles">
+    <article class="v5-article-card">
+      <span class="tag">ECOSYSTEM</span><h3>🌳 Food Forest</h3>
+      <p>A diversified planting system using different plant layers to create a productive and biodiverse farm area.</p>
+      <button class="v5-read" data-article="foodforest">Read Article →</button>
+    </article>
+    <article class="v5-article-card">
+      <span class="tag">WATER</span><h3>💧 Rainwater Harvesting</h3>
+      <p>Planning methods that collect and use rainfall while reducing unnecessary runoff from the site.</p>
+      <button class="v5-read" data-article="rainwater">Read Article →</button>
+    </article>
+    <article class="v5-article-card">
+      <span class="tag">SOIL</span><h3>♻️ Compost & Soil Health</h3>
+      <p>How compost and organic matter can support soil structure, nutrient cycling and biological activity.</p>
+      <button class="v5-read" data-article="compost">Read Article →</button>
+    </article>
+    <article class="v5-article-card">
+      <span class="tag">BIODIVERSITY</span><h3>🐝 Beekeeping</h3>
+      <p>An introduction to keeping bees as part of a farm system and their relationship with flowering plants.</p>
+      <button class="v5-read" data-article="bees">Read Article →</button>
+    </article>
+    <article class="v5-article-card">
+      <span class="tag">WATER</span><h3>🌊 Swales & Farm Pond</h3>
+      <p>Two different water-management features that can be considered in a site's overall drainage plan.</p>
+      <button class="v5-read" data-article="waterzones">Read Article →</button>
+    </article>
+    <article class="v5-article-card">
+      <span class="tag">PLANNING</span><h3>🌱 1-Acre Farm Plan</h3>
+      <p>A compact example of how food, water, animals, soil and household zones can be organized.</p>
+      <button class="v5-read" data-article="oneacre">Read Article →</button>
+    </article>
+  </div>
+
+  <h2 class="v5-title" style="margin-top:55px">⭐ Why These Systems Matter</h2>
+  <div class="v5-importance">
+    <div class="imp"><div class="imp-icon">🌍</div><h3>Biodiversity</h3><p>Different plants and habitats can support a wider range of organisms.</p></div>
+    <div class="imp"><div class="imp-icon">💧</div><h3>Water</h3><p>Good planning can help capture, store and use available water thoughtfully.</p></div>
+    <div class="imp"><div class="imp-icon">🌱</div><h3>Soil</h3><p>Organic matter and careful soil management are important parts of long-term farm planning.</p></div>
+    <div class="imp"><div class="imp-icon">♻️</div><h3>Resources</h3><p>Recycling farm resources can reduce waste and connect different parts of the system.</p></div>
+  </div>
+</section>
+
+<div class="v5-article-modal" id="v5ArticleModal" aria-hidden="true">
+  <div class="v5-article-box">
+    <button class="v5-article-close" id="v5ArticleClose">×</button>
+    <div id="v5ArticleBody"></div>
+  </div>
+</div>
+
+
+<script id="v5-articles-js">
+(function(){
+  var data={
+    foodforest:{
+      title:"🌳 Food Forest",
+      body:`<h2>Food Forest</h2>
+      <h3>Summary</h3><p>A food forest is a diversified planting system inspired by the layered structure of natural vegetation. It can combine fruit trees, smaller trees, shrubs, herbs, climbers and ground-level plants.</p>
+      <h3>Background</h3><p>Traditional farming systems in many regions have long combined trees and crops. Modern food-forest design develops these ideas into a planned, multi-layer growing system.</p>
+      <h3>Main Components</h3><ul><li>Upper tree layer</li><li>Small trees and shrubs</li><li>Herbaceous plants</li><li>Ground-cover plants</li><li>Climbers</li></ul>
+      <h3>Importance</h3><p>It can increase plant diversity, make use of different growing levels and provide habitats for useful organisms. The exact results depend on plant selection, climate, soil, water and management.</p>
+      <h3>Role in Our Farm</h3><p>The food forest can be linked with water-management areas, compost, paths and other production zones.</p>
+      <h3>Important Considerations</h3><p>Choose species according to local conditions, spacing, sunlight, water availability and maintenance needs.</p>`
+    },
+    rainwater:{
+      title:"💧 Rainwater Harvesting",
+      body:`<h2>Rainwater Harvesting</h2>
+      <h3>Summary</h3><p>Rainwater harvesting means collecting and managing rainfall so that water can be stored, infiltrated or used instead of being allowed to run off unnecessarily.</p>
+      <h3>Importance</h3><p>It can improve water availability during suitable periods and help reduce uncontrolled runoff. Storage and infiltration design should match rainfall, soil and site conditions.</p>
+      <h3>Main Methods</h3><ul><li>Roof-water collection</li><li>Storage tanks</li><li>Swales and infiltration areas</li><li>Farm ponds</li><li>Mulched planting areas</li></ul>
+      <h3>Role in Our Farm</h3><p>Water features can be planned together with crop areas, paths and the natural slope of the land.</p>
+      <h3>Important Considerations</h3><p>Water quality, overflow routes, mosquito management, structural safety and local regulations should be considered.</p>`
+    },
+    compost:{
+      title:"♻️ Compost & Soil Health",
+      body:`<h2>Compost & Soil Health</h2>
+      <h3>Summary</h3><p>Composting converts suitable organic materials into a more stable material that can be returned to the soil.</p>
+      <h3>Why It Is Important</h3><p>Compost can contribute organic matter and nutrients and may improve soil structure and moisture-holding characteristics. Results depend on the material and how the compost is made and used.</p>
+      <h3>Typical Materials</h3><ul><li>Plant residues</li><li>Dry leaves</li><li>Grass and other suitable green material</li><li>Animal manure where appropriate</li></ul>
+      <h3>Role in Our Farm</h3><p>Compost can connect vegetable production, tree planting and animal areas by recycling suitable organic residues.</p>
+      <h3>Important Considerations</h3><p>Use clean feedstock, maintain suitable moisture and aeration, and use mature compost appropriately.</p>`
+    },
+    bees:{
+      title:"🐝 Beekeeping",
+      body:`<h2>Beekeeping</h2>
+      <h3>Summary</h3><p>Beekeeping involves managing honey-bee colonies for products such as honey and beeswax. Bees also interact with flowering plants.</p>
+      <h3>Importance</h3><p>Pollinating insects are important components of many agricultural ecosystems. A farm with diverse flowering plants can provide forage at different times of the year.</p>
+      <h3>Farm Connection</h3><p>Flowering trees, shrubs and other plants can be planned around the farm while keeping hives in a suitable location.</p>
+      <h3>Important Considerations</h3><p>Beekeeping requires proper training, safe hive placement, suitable equipment and attention to bee health. Local rules and expert guidance should be followed.</p>`
+    },
+    waterzones:{
+      title:"🌊 Swales & Farm Pond",
+      body:`<h2>Swales & Farm Pond</h2>
+      <h3>Summary</h3><p>Swales and ponds are different features that may form part of a wider water-management plan.</p>
+      <h3>Swales</h3><p>A swale is a shallow landscape feature designed to slow and guide surface water, often along a contour. Its suitability depends on slope, soil, rainfall and site design.</p>
+      <h3>Farm Pond</h3><p>A farm pond is a storage basin that can hold water for appropriate farm uses. Its location, capacity, embankment and overflow arrangements require careful planning.</p>
+      <h3>Importance</h3><p>Together with vegetation and soil-management practices, these features can help organize water movement across a farm.</p>`
+    },
+    oneacre:{
+      title:"🌱 1-Acre Farm Plan",
+      body:`<h2>1-Acre Farm Plan</h2>
+      <h3>Summary</h3><p>A 1-acre plan can demonstrate how a smaller area may be divided into connected zones rather than treating every activity separately.</p>
+      <h3>Possible Zones</h3><ul><li>Food forest and fruit trees</li><li>Seasonal vegetable area</li><li>Water harvesting/storage</li><li>Compost and soil-management area</li><li>Small animal or poultry area where suitable</li><li>House, paths and service space</li></ul>
+      <h3>Importance</h3><p>Good zoning can reduce unnecessary movement, make maintenance easier and help different parts of the farm support one another.</p>
+      <h3>Important Considerations</h3><p>The actual layout should be adapted to the site's dimensions, slope, climate, water availability, access, local rules and the farmer's goals.</p>`
+    }
+  };
+
+  var modal=document.getElementById("v5ArticleModal");
+  var body=document.getElementById("v5ArticleBody");
+  var close=document.getElementById("v5ArticleClose");
+
+  document.querySelectorAll("[data-article]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var item=data[btn.getAttribute("data-article")];
+      if(!item)return;
+      body.innerHTML=item.body;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden","false");
+      document.body.style.overflow="hidden";
+    });
+  });
+  function closeArticle(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    document.body.style.overflow="";
+  }
+  if(close)close.addEventListener("click",closeArticle);
+  if(modal)modal.addEventListener("click",function(e){if(e.target===modal)closeArticle();});
+})();
+</script>
+
+</body>
+</html>
