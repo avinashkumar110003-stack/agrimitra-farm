@@ -1,0 +1,25 @@
+{
+  "name": "Agrimitra – Sustainable Farming",
+  "short_name": "Agrimitra",
+  "description": "A modern farming and sustainable agriculture knowledge app.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f7ee",
+  "theme_color": "#145a2a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
