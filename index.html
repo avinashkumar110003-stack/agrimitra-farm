@@ -2090,72 +2090,99 @@ function removeTypingIndicator() {
 
 async function sendChatMessage() {
   const userMessage = chatbotInput.value.trim();
-  
+
   if (!userMessage || isChatbotLoading) return;
-  
-  // Add user message to chat
+
   addMessageToChat(userMessage, true);
   chatbotInput.value = '';
-  
-  // Disable input while loading
+
   isChatbotLoading = true;
   chatbotInput.disabled = true;
   chatbotSend.disabled = true;
-  
-  // Show typing indicator
   showTypingIndicator();
-  
-  // Add to history
-  chatHistory.push({
-    role: 'user',
-    content: userMessage
-  });
-  
-  try {
-    // Call Claude API
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 500,
-        system: systemPrompt,
-        messages: chatHistory
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+
+  chatHistory.push({ role: 'user', content: userMessage });
+
+  // Keep the existing Claude-made website and chatbot UI.
+  // This fallback keeps the assistant working without exposing a Claude API key
+  // in a public GitHub Pages website.
+  const q = userMessage.toLowerCase();
+
+  const replies = [
+    {
+      keys: ['permaculture', 'perma culture'],
+      answer: '🌱 Permaculture is a farming and design approach that works with nature. It combines soil care, water management, biodiversity, food forests and useful farm systems to create a sustainable farm.'
+    },
+    {
+      keys: ['food forest', 'foodforest'],
+      answer: '🌳 A food forest uses different plant layers together, such as tall trees, fruit trees, shrubs, herbs, groundcovers and climbers. This improves biodiversity and makes better use of space.'
+    },
+    {
+      keys: ['compost', 'vermicompost'],
+      answer: '♻️ Compost adds organic matter to soil. Use plant residues and other suitable organic materials, keep the pile reasonably moist and allow it to decompose before using the finished compost.'
+    },
+    {
+      keys: ['soil', 'soil health', 'fertility'],
+      answer: '🌾 Healthy soil needs organic matter, good structure, living organisms, moisture and balanced nutrients. Compost, mulch, crop diversity and avoiding unnecessary soil disturbance can help.'
+    },
+    {
+      keys: ['ph', 'p.h.', 'acidic', 'alkaline'],
+      answer: '🧪 Soil pH shows how acidic or alkaline the soil is. Many common crops grow well around slightly acidic to neutral conditions, but the best pH depends on the crop.'
+    },
+    {
+      keys: ['rainwater', 'rain water', 'water harvesting', 'harvesting'],
+      answer: '💧 Rainwater harvesting collects and stores rainfall for later use. On a farm, tanks, ponds, swales and other suitable water-management features can reduce runoff and improve water availability.'
+    },
+    {
+      keys: ['swale', 'swales'],
+      answer: '💧 A swale is a shallow, usually level-on-contour earthwork designed to slow and spread rainwater so it can soak into the soil. Its suitability depends on the land, slope and drainage conditions.'
+    },
+    {
+      keys: ['biodiversity', 'pollinator', 'pollinators', 'bee', 'bees'],
+      answer: '🐝 Biodiversity makes a farm more resilient. Flowering plants, habitat areas, trees and reduced disturbance can support pollinators and other beneficial organisms.'
+    },
+    {
+      keys: ['1 acre', 'one acre', 'farm plan', 'farm planning'],
+      answer: '📐 A 1-acre farm can be divided into practical zones for the house, intensive crops, orchard/food forest, water storage, composting and animals. The exact layout should follow sunlight, slope, water flow and access.'
+    },
+    {
+      keys: ['organic farming', 'organic'],
+      answer: '🌿 Organic farming focuses on building soil health and managing pests and nutrients using biological and natural approaches while avoiding many synthetic inputs.'
+    },
+    {
+      keys: ['fertilizer', 'fertiliser'],
+      answer: '🌱 Fertilizers supply plant nutrients. The right choice and amount depend on soil condition and crop needs; soil testing is useful before making major nutrient applications.'
+    },
+    {
+      keys: ['hello', 'hi', 'hey', 'namaste'],
+      answer: '👋 Hello! I’m your AgriMitra Farm Assistant. Ask me about permaculture, soil, compost, water management, food forests, biodiversity or farm planning.'
     }
-    
-    const data = await response.json();
-    const assistantMessage = data.content[0].text;
-    
-    // Remove typing indicator
-    removeTypingIndicator();
-    
-    // Add assistant response
-    addMessageToChat(assistantMessage, false);
-    
-    // Add to history
-    chatHistory.push({
-      role: 'assistant',
-      content: assistantMessage
-    });
-    
-  } catch (error) {
-    removeTypingIndicator();
-    console.error('Chat error:', error);
-    addMessageToChat('Sorry, I encountered an error. Please try again later. Make sure you have a valid API key configured.', false);
-  } finally {
-    // Re-enable input
-    isChatbotLoading = false;
-    chatbotInput.disabled = false;
-    chatbotSend.disabled = false;
-    chatbotInput.focus();
+  ];
+
+  let reply = null;
+  for (const item of replies) {
+    if (item.keys.some(key => q.includes(key))) {
+      reply = item.answer;
+      break;
+    }
   }
+
+  if (!reply) {
+    reply = '🌱 I can help with permaculture, food forests, soil health, composting, rainwater harvesting, swales, biodiversity, organic farming and farm planning. Try asking me about one of these topics.';
+  }
+
+  // Small delay keeps the existing typing animation feeling natural.
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  removeTypingIndicator();
+  addMessageToChat(reply, false);
+
+  chatHistory.push({ role: 'assistant', content: reply });
+
+  isChatbotLoading = false;
+  chatbotInput.disabled = false;
+  chatbotSend.disabled = false;
+  chatbotInput.focus();
 }
 
 // Add welcome message with slight delay
@@ -2404,15 +2431,5 @@ function backToQuizzes() {
 }
 </script>
 
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('AgriMitra service worker registered'))
-      .catch(error => console.error('Service worker error:', error));
-  });
-}
-</script>
 </body>
 </html>
