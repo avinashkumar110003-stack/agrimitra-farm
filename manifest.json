@@ -1,6 +1,6 @@
 {
-  "name": "Agrimitra – Sustainable Farming",
-  "short_name": "Agrimitra",
+  "name": "AgriMitra – Sustainable Farming",
+  "short_name": "AgriMitra",
   "description": "A modern farming and sustainable agriculture knowledge app.",
   "start_url": "./index.html",
   "scope": "./",
