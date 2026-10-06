@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="manifest.json"> 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Permaculture Farm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#145a2a">
+<title>AgriMitra - Complete Agricultural Platform</title>
 <style>
 :root {
   --primary: #145a2a;
@@ -27,182 +29,239 @@ html[data-theme="dark"] {
   --card-bg: #1a2b1e;
   --border: #2d3d2f;
   --shadow: rgba(0, 0, 0, 0.3);
-  --accent: #81c784;
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  transition: background-color 0.3s;
 }
 
-/* Header with theme toggle */
+/* Header */
 header {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
-  text-align: center;
-  padding: 35px 15px;
-  position: relative;
-  animation: slideDown 0.6s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 4px 12px var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: calc(16px + env(safe-area-inset-top));
 }
 
 header h1 {
-  font-size: 32px;
-  margin: 0 0 10px;
+  font-size: 22px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-header p {
-  font-size: 17px;
-  margin: 0;
-  opacity: 0.95;
-}
-
-/* Theme toggle button */
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+.menu-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  transition: all 0.3s;
+  padding: 8px;
+}
+
+.menu-toggle:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+}
+
+.menu-line {
+  width: 24px;
+  height: 2.5px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.menu-toggle.active .menu-line:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.menu-toggle.active .menu-line:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.menu-toggle.active .menu-line:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px var(--shadow);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.6s ease-out 0.3s backwards;
+  color: white;
+  transition: all 0.3s;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.theme-toggle:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
 }
 
-.theme-toggle:hover {
-  transform: scale(1.1) rotate(20deg);
-  box-shadow: 0 6px 16px var(--shadow);
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 100%;
+  background: var(--card-bg);
+  box-shadow: 4px 0 12px var(--shadow);
+  z-index: 300;
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+  overflow-y: auto;
+  padding-top: env(safe-area-inset-top);
 }
 
-nav {
-  background: var(--primary-dark);
-  padding: 12px;
-  text-align: center;
-  overflow-x: auto;
-  white-space: nowrap;
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 20px 16px;
+  font-size: 18px;
+  font-weight: 700;
   position: sticky;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 8px var(--shadow);
 }
 
-nav a {
-  color: white;
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-menu a {
+  display: block;
+  padding: 14px 16px;
+  color: var(--text);
   text-decoration: none;
-  display: inline-block;
-  padding: 10px 14px;
-  margin: 2px;
-  border-radius: 8px;
-  font-size: 15px;
+  transition: all 0.3s;
   font-weight: 500;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  font-size: 14px;
 }
 
-nav a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: left 0.3s ease;
-  z-index: -1;
+.sidebar-menu a:active {
+  background: var(--border);
+  transform: translateX(4px);
 }
 
-nav a:hover::before {
-  left: 0;
+.sidebar-menu a.active {
+  color: var(--primary);
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+  background: rgba(20, 90, 42, 0.05);
 }
 
-nav a:hover {
-  background: var(--primary-light);
-  transform: translateY(-2px);
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 250;
+  display: none;
+  backdrop-filter: blur(4px);
 }
 
-.hero {
-  background: linear-gradient(135deg, #2b7938, #3f9147);
-  color: white;
-  text-align: center;
-  padding: 80px 20px;
-  position: relative;
-  overflow: hidden;
+.overlay.show {
+  display: block;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1), transparent),
-              radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05), transparent);
-  animation: float 6s ease-in-out infinite;
+/* Tabs */
+.app-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--card-bg);
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+  position: sticky;
+  top: 56px;
+  z-index: 150;
+  scrollbar-width: none;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(10px); }
+.app-tabs::-webkit-scrollbar {
+  display: none;
 }
 
-.hero h2 {
-  font-size: 36px;
-  color: white;
-  margin: 0 0 18px;
-  position: relative;
-  z-index: 1;
-  animation: slideUp 0.8s ease-out 0.2s backwards;
+.tab-btn {
+  flex: 1;
+  min-width: 70px;
+  padding: 12px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: all 0.3s;
+  opacity: 0.7;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  opacity: 1;
+}
+
+/* Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: slideUp 0.3s ease-out;
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -210,90 +269,79 @@ nav a:hover {
   }
 }
 
-.hero p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 18px;
-  max-width: 700px;
-  margin: auto;
-  position: relative;
-  z-index: 1;
-  animation: slideUp 0.8s ease-out 0.4s backwards;
-}
-
-.cta-button {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 28px;
-  background: white;
-  color: var(--primary);
-  text-decoration: none;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  animation: slideUp 0.8s ease-out 0.6s backwards;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.cta-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  background: rgba(255, 255, 255, 0.95);
-}
-
 section {
-  padding: 60px 18px;
+  padding: 20px 16px;
   max-width: 1200px;
-  margin: auto;
-  animation: fadeIn 0.8s ease-out;
+  margin: 0 auto;
 }
 
 section h2 {
   color: var(--primary);
-  text-align: center;
-  font-size: 32px;
-  margin-bottom: 30px;
+  font-size: 24px;
+  margin: 0 0 20px;
   font-weight: 700;
   position: relative;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
 }
 
 section h2::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
+  left: 0;
+  width: 40px;
+  height: 3px;
   background: linear-gradient(90deg, var(--primary), var(--primary-light));
   border-radius: 2px;
 }
 
-/* Cards Grid */
+section h3 {
+  color: var(--primary);
+  font-size: 20px;
+  margin: 24px 0 12px;
+  font-weight: 600;
+}
+
+section h4 {
+  color: var(--text);
+  font-size: 16px;
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+section p {
+  margin: 12px 0;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+section ul, section ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+section li {
+  margin: 8px 0;
+  line-height: 1.7;
+}
+
+/* Cards */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin-top: 30px;
+  gap: 16px;
+  margin: 20px 0;
 }
 
 .card {
   background: var(--card-bg);
-  padding: 24px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px var(--shadow);
   border-top: 5px solid var(--primary-light);
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  animation: scaleIn 0.6s ease-out;
-  animation-fill-mode: backwards;
+  transition: all 0.3s;
+  animation: scaleIn 0.5s ease-out;
 }
 
 @keyframes scaleIn {
@@ -307,39 +355,15 @@ section h2::after {
   }
 }
 
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
-.card:nth-child(4) { animation-delay: 0.4s; }
-.card:nth-child(5) { animation-delay: 0.5s; }
-.card:nth-child(6) { animation-delay: 0.6s; }
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-  transition: top 0.4s ease;
-  z-index: -1;
-}
-
-.card:hover::before {
-  top: 0;
-}
-
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px var(--shadow);
-  border-top-color: var(--accent);
+.card:active {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px var(--shadow);
 }
 
 .card h3 {
   color: var(--primary);
-  margin: 0 0 12px;
-  font-size: 20px;
+  margin: 0 0 8px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -347,315 +371,207 @@ section h2::after {
   margin: 0;
   color: var(--text);
   opacity: 0.8;
-}
-
-/* Article Section */
-.articles-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.search-box {
-  flex: 1;
-  min-width: 250px;
-  position: relative;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--card-bg);
-  color: var(--text);
   font-size: 14px;
-  transition: all 0.3s ease;
+  line-height: 1.5;
 }
 
-.search-box input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(69, 160, 73, 0.1);
-}
-
-.filter-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.filter-tag {
-  padding: 8px 16px;
-  border: 2px solid var(--border);
-  background: var(--card-bg);
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.filter-tag::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: var(--primary-light);
-  z-index: -1;
-  transition: left 0.3s ease;
-}
-
-.filter-tag:hover::before,
-.filter-tag.active::before {
-  left: 0;
-}
-
-.filter-tag:hover,
-.filter-tag.active {
-  color: white;
-  border-color: var(--primary-light);
-}
-
-.articles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-.article-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--shadow);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp 0.6s ease-out;
-  animation-fill-mode: backwards;
-}
-
-.article-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 28px var(--shadow);
-}
-
-.article-tag {
-  display: inline-block;
-  padding: 6px 12px;
+/* Info Box */
+.info-box {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 16px 16px 0 0;
-  width: fit-content;
-}
-
-.article-content {
   padding: 20px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px var(--shadow);
 }
 
-.article-card h3 {
-  color: var(--text);
-  margin: 12px 0 8px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.article-card p {
-  color: var(--text);
-  opacity: 0.75;
-  margin: 0 0 16px;
-  flex: 1;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.read-btn {
-  padding: 10px 16px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+.info-box h3 {
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  align-self: flex-start;
-  position: relative;
+  margin-top: 0;
+}
+
+.info-box p, .info-box li {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Content Box */
+.content-box {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
+  margin: 20px 0;
+  border-left: 4px solid var(--primary);
+}
+
+.content-box h3 {
+  margin-top: 0;
+}
+
+.content-box ul {
+  margin: 12px 0;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px var(--shadow);
+  border-radius: 8px;
   overflow: hidden;
 }
 
-.read-btn::after {
-  content: '→';
-  margin-left: 6px;
-  transition: margin 0.3s ease;
+th {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
 }
 
-.read-btn:hover::after {
-  margin-left: 12px;
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
 
-.read-btn:hover {
-  transform: translateX(2px);
-  box-shadow: 0 4px 12px rgba(69, 160, 73, 0.3);
+tr:last-child td {
+  border-bottom: none;
 }
 
-/* Stats Section */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
-  margin: 40px 0;
-}
-
-.stat {
+/* Home Screen */
+.home-screen {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 40px 20px;
   text-align: center;
-  padding: 24px;
-  background: var(--card-bg);
+  margin: -20px -16px 20px -16px;
+  border-radius: 0 0 20px 20px;
+}
+
+.app-name {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.app-tagline {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px var(--shadow);
-  animation: slideUp 0.8s ease-out;
-  animation-fill-mode: backwards;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stat-number {
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 8px;
-  font-variant-numeric: tabular-nums;
+  margin: 0;
 }
 
 .stat-label {
-  font-size: 14px;
-  color: var(--text);
-  opacity: 0.7;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 12px;
+  opacity: 0.8;
+  margin: 4px 0 0;
 }
 
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-content {
+/* Quiz Styles */
+.quiz-container {
   background: var(--card-bg);
-  border-radius: 16px;
-  max-width: 700px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: 32px;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease-out;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
-.modal-content h1 {
-  color: var(--text);
-  margin-top: 0;
-  font-size: 28px;
-  font-weight: 700;
+.quiz-selector {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
 }
 
-.modal-content h2 {
-  color: var(--primary);
-  margin-top: 24px;
-  margin-bottom: 12px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.modal-content p,
-.modal-content li {
-  color: var(--text);
-  opacity: 0.85;
-  line-height: 1.8;
-  font-size: 15px;
-}
-
-.modal-content ul {
-  padding-left: 24px;
-}
-
-.close-modal {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: var(--border);
+.quiz-btn {
+  padding: 16px;
   border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 24px;
+  border-radius: 8px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  color: var(--text);
+  font-weight: 600;
+  transition: all 0.3s;
+  text-align: center;
 }
 
-.close-modal:hover {
-  transform: rotate(90deg);
-  background: var(--primary-light);
+.quiz-btn.easy {
+  background: #90EE90;
+  color: #2d7d2d;
+}
+
+.quiz-btn.medium {
+  background: #FFD700;
+  color: #B8860B;
+}
+
+.quiz-btn.hard {
+  background: #FF6347;
+  color: #8B0000;
+}
+
+.quiz-btn.ultra {
+  background: #4B0082;
   color: white;
 }
 
-/* Toast Notification */
+.quiz-btn:active {
+  transform: translateY(-2px);
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  width: 0%;
+  transition: width 0.3s;
+}
+
+/* Toast */
 .toast {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 16px;
   background: var(--primary);
   color: white;
-  padding: 16px 24px;
+  padding: 12px 16px;
   border-radius: 8px;
   box-shadow: 0 4px 12px var(--shadow);
-  animation: slideUp 0.3s ease-out;
   z-index: 3000;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  font-size: 13px;
+  font-weight: 500;
+  animation: slideUp 0.3s ease-out;
+  bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
 /* Footer */
@@ -663,1504 +579,1028 @@ footer {
   background: var(--primary-dark);
   color: white;
   text-align: center;
-  padding: 40px 20px;
-  margin-top: 60px;
+  padding: 24px 16px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  margin-top: 40px;
 }
 
 footer h2 {
   color: white;
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin: 0 0 12px;
+  font-size: 18px;
 }
 
 footer p {
-  opacity: 0.9;
   margin: 8px 0;
+  font-size: 13px;
+  opacity: 0.9;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-  header h1 {
-    font-size: 24px;
-  }
-
-  .hero h2 {
-    font-size: 28px;
-  }
-
-  section {
-    padding: 40px 15px;
-  }
-
   section h2 {
-    font-size: 24px;
+    font-size: 22px;
   }
-
-  .articles-header {
-    flex-direction: column;
+  .cards {
+    grid-template-columns: 1fr;
   }
-
-  .search-box {
-    min-width: 100%;
+  table {
+    font-size: 12px;
   }
-
-  .modal-content {
-    padding: 24px;
-  }
-
-  .theme-toggle {
-    width: 45px;
-    height: 45px;
-    font-size: 20px;
-    top: 15px;
-    right: 15px;
+  th, td {
+    padding: 8px;
   }
 }
 
-/* Scroll reveal animation */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: revealAnimate 0.8s ease-out forwards;
-}
-
-@keyframes revealAnimate {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 18px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .quick-stats {
+    grid-template-columns: 1fr;
   }
-}
-
-/* Chatbot Styles */
-.chatbot-button {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 16px var(--shadow);
-  transition: all 0.3s ease;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.chatbot-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 24px var(--shadow);
-}
-
-.chatbot-button.open {
-  transform: scale(0.9) rotate(45deg);
-}
-
-.chatbot-container {
-  position: fixed;
-  bottom: 100px;
-  right: 24px;
-  width: 400px;
-  height: 600px;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px var(--shadow);
-  display: flex;
-  flex-direction: column;
-  z-index: 499;
-  opacity: 0;
-  transform: scale(0.8) translateY(20px);
-  pointer-events: none;
-  transition: all 0.3s ease;
-}
-
-.chatbot-container.open {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
-}
-
-.chatbot-header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  padding: 20px;
-  border-radius: 16px 16px 0 0;
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.chatbot-close {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 20px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chatbot-close:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(90deg);
-}
-
-.chatbot-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.message {
-  display: flex;
-  gap: 8px;
-  animation: slideUp 0.3s ease-out;
-}
-
-.message.user {
-  justify-content: flex-end;
-}
-
-.message-content {
-  max-width: 75%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.5;
-  word-wrap: break-word;
-}
-
-.message.bot .message-content {
-  background: var(--border);
-  color: var(--text);
-  border-radius: 12px 12px 12px 2px;
-}
-
-.message.user .message-content {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  border-radius: 12px 12px 2px 12px;
-}
-
-.message-content a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-.typing-indicator {
-  display: flex;
-  gap: 4px;
-  padding: 12px 16px;
-  background: var(--border);
-  border-radius: 12px 12px 12px 2px;
-  width: fit-content;
-}
-
-.typing-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--text);
-  opacity: 0.6;
-  animation: typing 1.4s infinite;
-}
-
-.typing-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.typing-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
-  30% { transform: translateY(-10px); opacity: 1; }
-}
-
-.chatbot-input-area {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: 8px;
-}
-
-.chatbot-input {
-  flex: 1;
-  padding: 12px 16px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 14px;
-  transition: all 0.3s ease;
-  font-family: inherit;
-}
-
-.chatbot-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(69, 160, 73, 0.1);
-}
-
-.chatbot-send {
-  padding: 12px 16px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chatbot-send:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(69, 160, 73, 0.3);
-}
-
-.chatbot-send:active {
-  transform: translateY(0);
-}
-
-.chatbot-send:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.chatbot-welcome {
-  text-align: center;
-  padding: 20px;
-  color: var(--text);
-  opacity: 0.7;
-  font-size: 13px;
-}
-
-.chatbot-welcome-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-/* Chatbot scrollbar */
-.chatbot-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chatbot-messages::-webkit-scrollbar-track {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-.chatbot-messages::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 3px;
-}
-
-.chatbot-messages::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-light);
-}
-
-@media (max-width: 600px) {
-  .chatbot-container {
-    width: calc(100vw - 32px);
-    height: 70vh;
-    bottom: 90px;
-    right: 16px;
+  section h3 {
+    font-size: 18px;
   }
-
-  .chatbot-button {
-    bottom: 16px;
-    right: 16px;
-    width: 56px;
-    height: 56px;
-  }
-
-  .message-content {
-    max-width: 85%;
-  }
-}
-
-/* Quiz Styles */
-.quiz-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 30px 0;
-}
-
-.quiz-level-btn {
-  background: var(--card-bg);
-  border: 3px solid var(--border);
-  border-radius: 12px;
-  padding: 30px 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  font-family: inherit;
-  position: relative;
-  overflow: hidden;
-  animation: slideUp 0.6s ease-out;
-  animation-fill-mode: backwards;
-}
-
-.quiz-level-btn:nth-child(1) { animation-delay: 0.1s; }
-.quiz-level-btn:nth-child(2) { animation-delay: 0.2s; }
-.quiz-level-btn:nth-child(3) { animation-delay: 0.3s; }
-.quiz-level-btn:nth-child(4) { animation-delay: 0.4s; }
-
-.quiz-level-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.quiz-level-btn:hover {
-  transform: translateY(-8px);
-  border-color: var(--primary);
-  box-shadow: 0 8px 24px var(--shadow);
-}
-
-.quiz-level-btn:hover::before {
-  left: 100%;
-}
-
-.level-icon {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-.level-name {
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-.level-count {
-  font-size: 13px;
-  color: var(--text);
-  opacity: 0.7;
-}
-
-/* Quiz Container */
-.quiz-container {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px var(--shadow);
-  animation: slideUp 0.6s ease-out;
-}
-
-.quiz-progress {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 8px;
-  background: var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--primary-light));
-  border-radius: 4px;
-  transition: width 0.4s ease;
-  width: 0%;
-}
-
-.progress-text {
-  font-weight: 600;
-  color: var(--text);
-  font-size: 14px;
-  white-space: nowrap;
-  min-width: 40px;
-  text-align: right;
-}
-
-.quiz-exit-btn {
-  background: var(--border);
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  color: var(--text);
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.quiz-exit-btn:hover {
-  background: var(--primary);
-  color: white;
-}
-
-.quiz-content {
-  margin-bottom: 30px;
-}
-
-.quiz-content h3 {
-  color: var(--text);
-  font-size: 20px;
-  margin: 0 0 24px;
-  line-height: 1.6;
-}
-
-.options-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.option {
-  background: var(--border);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: left;
-  font-family: inherit;
-  color: var(--text);
-  font-size: 15px;
-  position: relative;
-  overflow: hidden;
-}
-
-.option::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(69, 160, 73, 0.1);
-  transition: left 0.3s ease;
-  z-index: 0;
-}
-
-.option:hover::before {
-  left: 0;
-}
-
-.option:hover {
-  border-color: var(--primary);
-  transform: translateX(4px);
-}
-
-.option span {
-  position: relative;
-  z-index: 1;
-}
-
-.option.selected {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  border-color: var(--primary);
-  color: white;
-}
-
-.option.correct {
-  background: linear-gradient(135deg, #4caf50, #66bb6a);
-  border-color: #4caf50;
-  color: white;
-}
-
-.option.incorrect {
-  background: linear-gradient(135deg, #f44336, #ef5350);
-  border-color: #f44336;
-  color: white;
-}
-
-.quiz-navigation {
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.quiz-nav-btn {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all 0.3s ease;
-}
-
-.quiz-nav-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(69, 160, 73, 0.3);
-}
-
-.quiz-nav-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Quiz Results */
-.quiz-results {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 4px 12px var(--shadow);
-  text-align: center;
-  animation: slideUp 0.6s ease-out;
-}
-
-.results-content h2 {
-  color: var(--primary);
-  font-size: 28px;
-  margin: 0 0 30px;
-}
-
-.score-circle {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 30px;
-  box-shadow: 0 8px 24px rgba(69, 160, 73, 0.3);
-  animation: scaleIn 0.6s ease-out;
-}
-
-.score-text {
-  font-size: 56px;
-  font-weight: 700;
-  color: white;
-}
-
-.results-content p {
-  font-size: 18px;
-  color: var(--text);
-  margin: 20px 0;
-  opacity: 0.85;
-}
-
-.results-summary {
-  background: var(--border);
-  border-radius: 8px;
-  padding: 20px;
-  margin: 30px 0;
-  text-align: left;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-}
-
-.summary-item {
-  text-align: center;
-}
-
-.summary-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: var(--text);
-  opacity: 0.7;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.summary-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-@media (max-width: 768px) {
-  .quiz-selector {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-
-  .quiz-container {
-    padding: 20px;
-  }
-
-  .score-circle {
-    width: 150px;
-    height: 150px;
-  }
-
-  .score-text {
-    font-size: 40px;
-  }
-
-  .quiz-navigation {
-    flex-direction: column;
-  }
-
-  .quiz-nav-btn {
-    width: 100%;
+  .tab-btn {
+    min-width: 50px;
+    font-size: 10px;
   }
 }
 </style>
-
-<style>
-.knowledge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:28px}
-.knowledge-card{padding:24px;border-radius:18px;background:var(--card-bg,#fff);box-shadow:0 8px 25px rgba(0,0,0,.08)}
-.knowledge-card h3{margin-top:0}.knowledge-card p{line-height:1.6}
-.knowledge-card button{border:0;border-radius:10px;padding:10px 15px;cursor:pointer;font-weight:600}
-.knowledge-page{display:none;position:fixed;inset:0;z-index:9999;overflow:auto;background:var(--bg,#f7faf5);padding:25px}
-.knowledge-page.open{display:block}.knowledge-page-inner{max-width:950px;margin:auto;padding-bottom:60px}
-.knowledge-back{border:0;background:transparent;font-size:16px;font-weight:700;cursor:pointer;margin:10px 0 25px}
-.knowledge-page h1{font-size:clamp(28px,5vw,48px)}.knowledge-page h2{margin-top:30px}
-.knowledge-page p,.knowledge-page li{line-height:1.75}
-@media(max-width:600px){.knowledge-page{padding:15px}.knowledge-card{padding:20px}}
-</style>
-
 </head>
 <body>
 
-<!-- Theme Toggle -->
-<button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">🌙</button>
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- Header -->
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">🌾 AgriMitra Complete</div>
+  <ul class="sidebar-menu">
+    <li><a href="#" onclick="switchTab('home'); closeSidebar(); return false;">🏠 Home</a></li>
+    <li><a href="#" onclick="switchTab('land'); closeSidebar(); return false;">🏞️ Land & Soil</a></li>
+    <li><a href="#" onclick="switchTab('ph'); closeSidebar(); return false;">🔬 Soil pH</a></li>
+    <li><a href="#" onclick="switchTab('sowing'); closeSidebar(); return false;">📅 Sowing Calendar</a></li>
+    <li><a href="#" onclick="switchTab('water'); closeSidebar(); return false;">💧 Water</a></li>
+    <li><a href="#" onclick="switchTab('food'); closeSidebar(); return false;">🌳 Food Forests</a></li>
+    <li><a href="#" onclick="switchTab('compost'); closeSidebar(); return false;">♻️ Composting</a></li>
+    <li><a href="#" onclick="switchTab('fisheries'); closeSidebar(); return false;">🐟 Fisheries</a></li>
+    <li><a href="#" onclick="switchTab('integrated'); closeSidebar(); return false;">🔗 Integrated Farming</a></li>
+    <li><a href="#" onclick="switchTab('farmtypes'); closeSidebar(); return false;">🌾 Farm Types</a></li>
+    <li><a href="#" onclick="switchTab('demos'); closeSidebar(); return false;">🎯 Demo Models</a></li>
+    <li><a href="#" onclick="switchTab('tools'); closeSidebar(); return false;">🔧 Tools</a></li>
+    <li><a href="#" onclick="switchTab('quizzes'); closeSidebar(); return false;">🧠 Quiz</a></li>
+  </ul>
+</aside>
+
+<!-- Header with 3-Line Toggle -->
 <header>
-  <h1>🌱 My Permaculture Farm</h1>
-  <p>Building a sustainable and interconnected food system</p>
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" title="Menu">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+    </button>
+    <h1>🌾 AgriMitra</h1>
+  </div>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Theme">🌙</button>
 </header>
 
-<!-- Navigation -->
-<nav>
-  <a href="#features">Features</a>
-  <a href="#articles">Knowledge Base</a>
-  <a href="#land-ph">Land & pH</a>
-  <a href="#quizzes">Quizzes</a>
-  <a href="#importance">Why It Matters</a>
-  <a href="#stats">Impact</a>
-  <a href="#footer">Contact</a>
-</nav>
+<!-- Tabs -->
+<div class="app-tabs">
+  <button class="tab-btn active" data-tab="home" onclick="switchTab('home')">Home</button>
+  <button class="tab-btn" data-tab="land" onclick="switchTab('land')">Land</button>
+  <button class="tab-btn" data-tab="ph" onclick="switchTab('ph')">pH</button>
+  <button class="tab-btn" data-tab="sowing" onclick="switchTab('sowing')">Sowing</button>
+  <button class="tab-btn" data-tab="fisheries" onclick="switchTab('fisheries')">Fish</button>
+  <button class="tab-btn" data-tab="integrated" onclick="switchTab('integrated')">Integ</button>
+  <button class="tab-btn" data-tab="demos" onclick="switchTab('demos')">Models</button>
+  <button class="tab-btn" data-tab="quizzes" onclick="switchTab('quizzes')">Quiz</button>
+</div>
 
-<!-- Hero Section -->
-<section class="hero">
-  <h2>Welcome to Sustainable Farming</h2>
-  <p>Explore permaculture design principles, water management, soil health, and biodiversity through interactive knowledge and practical examples.</p>
-  <button class="cta-button" onclick="document.getElementById('articles').scrollIntoView({behavior: 'smooth'})">Explore Now</button>
-</section>
-
-<!-- Features Section -->
-<section id="features">
-  <h2>🏡 Core Features</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>🌳 Food Forest</h3>
-      <p>Multi-layer planting systems that mimic natural forest structure for maximum productivity and biodiversity.</p>
-    </div>
-    <div class="card">
-      <h3>💧 Water Management</h3>
-      <p>Rainwater harvesting, swales, and farm ponds designed to capture and manage water efficiently.</p>
-    </div>
-    <div class="card">
-      <h3>♻️ Soil Health</h3>
-      <p>Composting and organic matter cycling to build fertile, living soil that supports growth.</p>
-    </div>
-    <div class="card">
-      <h3>🐝 Biodiversity</h3>
-      <p>Integrated beekeeping and habitat creation to support pollinators and beneficial organisms.</p>
-    </div>
-    <div class="card">
-      <h3>🌿 Zonation</h3>
-      <p>Strategic layout of farm areas to optimize resource flow and reduce maintenance needs.</p>
-    </div>
-    <div class="card">
-      <h3>📊 Planning</h3>
-      <p>Practical examples and frameworks for designing a 1-acre integrated farm system.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Articles Section -->
-<section id="articles">
-  <h2>📚 Knowledge Base</h2>
-  
-  <div class="articles-header">
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search articles..." />
-    </div>
-    <div class="filter-tags">
-      <button class="filter-tag active" data-filter="all">All</button>
-      <button class="filter-tag" data-filter="ECOSYSTEM">Ecosystem</button>
-      <button class="filter-tag" data-filter="WATER">Water</button>
-      <button class="filter-tag" data-filter="SOIL">Soil</button>
-      <button class="filter-tag" data-filter="BIODIVERSITY">Biodiversity</button>
-      <button class="filter-tag" data-filter="PLANNING">Planning</button>
-    </div>
-  </div>
-
-  <div class="articles-grid" id="articlesGrid">
-    <article class="article-card" data-category="ECOSYSTEM">
-      <span class="article-tag">ECOSYSTEM</span>
-      <div class="article-content">
-        <h3>🌳 Food Forest</h3>
-        <p>A diversified planting system using different plant layers to create a productive and biodiverse farm area.</p>
-        <button class="read-btn" onclick="openArticle('foodforest')">Read Article</button>
+<!-- HOME -->
+<div class="tab-content active" id="home-tab">
+  <section class="home-screen">
+    <h1 class="app-name">🌾 AgriMitra Complete</h1>
+    <p class="app-tagline">Complete Agricultural Knowledge & Farming Systems</p>
+    <div class="quick-stats">
+      <div class="stat-card">
+        <p class="stat-number">13</p>
+        <p class="stat-label">Sections</p>
       </div>
-    </article>
-
-    <article class="article-card" data-category="WATER">
-      <span class="article-tag" style="background: linear-gradient(135deg, #0288d1, #0da5c0);">WATER</span>
-      <div class="article-content">
-        <h3>💧 Rainwater Harvesting</h3>
-        <p>Planning methods that collect and use rainfall while reducing unnecessary runoff from the site.</p>
-        <button class="read-btn" onclick="openArticle('rainwater')">Read Article</button>
+      <div class="stat-card">
+        <p class="stat-number">1000+</p>
+        <p class="stat-label">Info Points</p>
       </div>
-    </article>
-
-    <article class="article-card" data-category="SOIL">
-      <span class="article-tag" style="background: linear-gradient(135deg, #8d6e63, #a1887f);">SOIL</span>
-      <div class="article-content">
-        <h3>♻️ Compost & Soil Health</h3>
-        <p>How compost and organic matter can support soil structure, nutrient cycling and biological activity.</p>
-        <button class="read-btn" onclick="openArticle('compost')">Read Article</button>
+      <div class="stat-card">
+        <p class="stat-number">80</p>
+        <p class="stat-label">Quiz Q's</p>
       </div>
-    </article>
-
-    <article class="article-card" data-category="BIODIVERSITY">
-      <span class="article-tag" style="background: linear-gradient(135deg, #f57c00, #ffb300);">BIODIVERSITY</span>
-      <div class="article-content">
-        <h3>🐝 Beekeeping</h3>
-        <p>An introduction to keeping bees as part of a farm system and their relationship with flowering plants.</p>
-        <button class="read-btn" onclick="openArticle('bees')">Read Article</button>
-      </div>
-    </article>
-
-    <article class="article-card" data-category="WATER">
-      <span class="article-tag" style="background: linear-gradient(135deg, #0288d1, #0da5c0);">WATER</span>
-      <div class="article-content">
-        <h3>🌊 Swales & Farm Pond</h3>
-        <p>Two different water-management features that can be considered in a site's overall drainage plan.</p>
-        <button class="read-btn" onclick="openArticle('waterzones')">Read Article</button>
-      </div>
-    </article>
-
-    <article class="article-card" data-category="PLANNING">
-      <span class="article-tag" style="background: linear-gradient(135deg, #7b1fa2, #9c27b0);">PLANNING</span>
-      <div class="article-content">
-        <h3>🌱 1-Acre Farm Plan</h3>
-        <p>A compact example of how food, water, animals, soil and household zones can be organized.</p>
-        <button class="read-btn" onclick="openArticle('oneacre')">Read Article</button>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- Importance Section -->
-<section id="importance">
-  <h2>⭐ Why These Systems Matter</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>🌍 Biodiversity</h3>
-      <p>Different plants and habitats can support a wider range of organisms, creating resilient ecosystems.</p>
-    </div>
-    <div class="card">
-      <h3>💧 Water Conservation</h3>
-      <p>Good planning can help capture, store and use available water thoughtfully throughout seasons.</p>
-    </div>
-    <div class="card">
-      <h3>🌱 Soil Regeneration</h3>
-      <p>Organic matter and careful soil management are important parts of long-term farm sustainability.</p>
-    </div>
-    <div class="card">
-      <h3>♻️ Resource Cycling</h3>
-      <p>Recycling farm resources can reduce waste and connect different parts of the system effectively.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Stats Section -->
-<section id="stats">
-  <h2>📊 Farm Impact</h2>
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-number" data-target="500">0</div>
-      <div class="stat-label">Species Supported</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number" data-target="85">0</div>
-      <div class="stat-label">Water Retention %</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number" data-target="10">0</div>
-      <div class="stat-label">Tons of Produce</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number" data-target="100">0</div>
-      <div class="stat-label">Organic Matter %</div>
-    </div>
-  </div>
-</section>
-
-<!-- Land & pH Information Section -->
-<section id="land-ph">
-  <h2>🌍 Land & Soil Chemistry Guide</h2>
-  
-  <div class="cards">
-    <div class="card">
-      <h3>🏞️ Land Assessment</h3>
-      <p>Understanding your land's characteristics is crucial for successful permaculture design. Evaluate slope, aspect, water flow, existing vegetation, soil depth, and microclimates. Document seasonal weather patterns and existing infrastructure.</p>
-      <button class="read-btn" onclick="openArticle('landguide')">Learn More</button>
-    </div>
-    <div class="card">
-      <h3>📊 Soil pH Levels</h3>
-      <p>Soil pH affects nutrient availability and plant growth. Most crops prefer 6.0-7.0 pH. Test your soil regularly and adjust with lime (to raise) or sulfur (to lower). Understanding pH helps optimize your farm's productivity.</p>
-      <button class="read-btn" onclick="openArticle('phguide')">Learn More</button>
-    </div>
-    <div class="card">
-      <h3>🔍 Soil Testing</h3>
-      <p>Regular soil testing provides essential data about nutrient content, pH, organic matter, and microorganisms. This information guides your composting strategy and fertilization decisions for optimal farm health.</p>
-      <button class="read-btn" onclick="openArticle('soiltesting')">Learn More</button>
-    </div>
-  </div>
-
-  <div style="margin-top: 40px; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px var(--shadow);">
-    <h3 style="color: var(--primary); margin-top: 0;">📈 Ideal pH Ranges for Common Farm Plants</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Most Vegetables:</strong> 6.0-7.0
-      </div>
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Blueberries:</strong> 4.5-5.5
-      </div>
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Carrots:</strong> 6.0-6.8
-      </div>
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Apples:</strong> 6.0-7.0
-      </div>
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Potatoes:</strong> 5.5-6.8
-      </div>
-      <div style="padding: 15px; background: var(--border); border-radius: 8px; border-left: 4px solid var(--primary-light);">
-        <strong>Berries:</strong> 4.5-6.0
+      <div class="stat-card">
+        <p class="stat-number">15</p>
+        <p class="stat-label">Demo Models</p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Quizzes Section -->
-<section id="quizzes">
-  <h2>🧠 Test Your Knowledge - Permaculture Quizzes</h2>
-  <p style="text-align: center; opacity: 0.8; margin-bottom: 30px;">Challenge yourself with 4 difficulty levels. Each quiz has 20 questions!</p>
-  
-  <div id="quizSelector" class="quiz-selector">
-    <button class="quiz-level-btn" data-level="easy" onclick="startQuiz('easy')">
-      <div class="level-icon">🟢</div>
-      <div class="level-name">Easy</div>
-      <div class="level-count">20 Questions</div>
-    </button>
-    <button class="quiz-level-btn" data-level="medium" onclick="startQuiz('medium')">
-      <div class="level-icon">🟡</div>
-      <div class="level-name">Medium</div>
-      <div class="level-count">20 Questions</div>
-    </button>
-    <button class="quiz-level-btn" data-level="hard" onclick="startQuiz('hard')">
-      <div class="level-icon">🔴</div>
-      <div class="level-name">Hard</div>
-      <div class="level-count">20 Questions</div>
-    </button>
-    <button class="quiz-level-btn" data-level="ultra" onclick="startQuiz('ultra')">
-      <div class="level-icon">⚫</div>
-      <div class="level-name">Ultra Hard</div>
-      <div class="level-count">20 Questions</div>
-    </button>
-  </div>
+  <section>
+    <h2>📚 Complete Agricultural Knowledge System</h2>
+    <div class="cards">
+      <div class="card" onclick="switchTab('land')">
+        <h3>🏞️ Land Assessment</h3>
+        <p>Topography, slope, water flow analysis</p>
+      </div>
+      <div class="card" onclick="switchTab('ph')">
+        <h3>🔬 Soil pH Guide</h3>
+        <p>Testing, adjustment, optimization</p>
+      </div>
+      <div class="card" onclick="switchTab('sowing')">
+        <h3>📅 Sowing Calendar</h3>
+        <p>Seasonal planting schedules</p>
+      </div>
+      <div class="card" onclick="switchTab('fisheries')">
+        <h3>🐟 Aquaculture</h3>
+        <p>Fish farming systems & species</p>
+      </div>
+      <div class="card" onclick="switchTab('demos')">
+        <h3>🎯 Demo Models</h3>
+        <p>15 real farm system examples</p>
+      </div>
+      <div class="card" onclick="switchTab('quizzes')">
+        <h3>🧠 Learn & Test</h3>
+        <p>80 questions, 4 difficulty levels</p>
+      </div>
+    </div>
+  </section>
+</div>
 
-  <div id="quizContainer" class="quiz-container" style="display: none;">
-    <div class="quiz-progress">
-      <div class="progress-bar">
+<!-- LAND & SOIL -->
+<div class="tab-content" id="land-tab">
+  <section>
+    <h2>🏞️ Land & Soil - Complete Assessment Guide</h2>
+    
+    <h3>📋 Land Assessment Fundamentals</h3>
+    <div class="content-box">
+      <h4>1. Topography & Slope Analysis</h4>
+      <ul>
+        <li><strong>Flat land (0-2%):</strong> Easy to work, water pools, needs drainage</li>
+        <li><strong>Gentle slope (2-10%):</strong> Ideal for water flow, runoff management</li>
+        <li><strong>Moderate slope (10-20%):</strong> Needs swales/terraces, erosion potential</li>
+        <li><strong>Steep slope (>20%):</strong> Erosion risk, requires special techniques</li>
+      </ul>
+    </div>
+
+    <div class="content-box">
+      <h4>2. Aspect & Sun Exposure</h4>
+      <ul>
+        <li><strong>North-facing:</strong> Cool, moist, good for shade plants</li>
+        <li><strong>South-facing:</strong> Warmest, best for sun-loving plants (N. hemisphere)</li>
+        <li><strong>East-facing:</strong> Morning sun, afternoon shade</li>
+        <li><strong>West-facing:</strong> Afternoon heat, hardy plants</li>
+      </ul>
+    </div>
+
+    <div class="content-box">
+      <h4>3. Water Flow & Drainage</h4>
+      <p>Observe during heavy rain:</p>
+      <ul>
+        <li>Mark natural water flow patterns</li>
+        <li>Identify low points for ponds</li>
+        <li>Note waterlogging areas</li>
+        <li>Look for natural streams</li>
+        <li>Test soil drainage (dig hole, fill with water, time drainage)</li>
+      </ul>
+    </div>
+
+    <h3>🔬 Comprehensive Soil Testing</h3>
+    <div class="content-box">
+      <h4>Testing Components:</h4>
+      <ul>
+        <li><strong>Macronutrients:</strong> N, P, K, Ca, Mg, S</li>
+        <li><strong>Micronutrients:</strong> Fe, Mn, Cu, Zn, B, Mo</li>
+        <li><strong>Organic Matter:</strong> 3-5% ideal</li>
+        <li><strong>CEC (Cation Exchange Capacity):</strong> Nutrient-holding ability</li>
+        <li><strong>Texture:</strong> Sand, silt, clay percentages</li>
+        <li><strong>Salinity:</strong> Salt concentration</li>
+      </ul>
+    </div>
+
+    <div class="content-box">
+      <h4>Testing Timeline:</h4>
+      <ul>
+        <li><strong>New Land:</strong> Before any work begins</li>
+        <li><strong>Ongoing:</strong> Every 2-3 years</li>
+        <li><strong>Problem Areas:</strong> Anytime you notice issues</li>
+        <li><strong>Best Timing:</strong> Fall (allows adjustment before spring)</li>
+        <li><strong>Sampling:</strong> 8-10 spots mixed for average</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- SOIL pH -->
+<div class="tab-content" id="ph-tab">
+  <section>
+    <h2>🔬 Soil pH - Complete Guide</h2>
+
+    <h3>📊 Understanding pH Scale</h3>
+    <div class="info-box">
+      <p><strong>0-7 = ACIDIC</strong> (more hydrogen ions)</p>
+      <p><strong>7 = NEUTRAL</strong></p>
+      <p><strong>7-14 = ALKALINE/BASIC</strong> (more hydroxide ions)</p>
+      <p style="margin-top: 16px; font-size: 13px;">Each point = 10x change in acidity/alkalinity!</p>
+    </div>
+
+    <h3>🌾 pH by Crop Type</h3>
+    <table>
+      <tr>
+        <th>pH Range</th>
+        <th>Type</th>
+        <th>Best Crops</th>
+        <th>Nutrient Availability</th>
+      </tr>
+      <tr>
+        <td>4.0-5.0</td>
+        <td>Very Acidic</td>
+        <td>Blueberries, azaleas</td>
+        <td>Iron & manganese available</td>
+      </tr>
+      <tr>
+        <td>5.5-6.0</td>
+        <td>Acidic</td>
+        <td>Most vegetables</td>
+        <td>Good nutrient availability</td>
+      </tr>
+      <tr>
+        <td>6.0-7.0</td>
+        <td>Slightly Acidic (IDEAL)</td>
+        <td>Most crops</td>
+        <td>Optimal nutrient release</td>
+      </tr>
+      <tr>
+        <td>7.0-8.0</td>
+        <td>Neutral to Alkaline</td>
+        <td>Legumes, brassicas</td>
+        <td>Iron & manganese locked up</td>
+      </tr>
+      <tr>
+        <td>8.0+</td>
+        <td>Very Alkaline</td>
+        <td>Limited crops</td>
+        <td>Most nutrients unavailable</td>
+      </tr>
+    </table>
+
+    <h3>🧪 Testing Methods</h3>
+    <div class="content-box">
+      <ul>
+        <li><strong>DIY pH Kit (~$10):</strong> Quick, moderate accuracy, instant results</li>
+        <li><strong>Digital pH Meter (~$30-100):</strong> Better accuracy, needs calibration</li>
+        <li><strong>Lab Testing (~$20-50):</strong> Most accurate + full nutrient analysis, 1-2 weeks</li>
+      </ul>
+    </div>
+
+    <h3>⚙️ Adjusting pH</h3>
+    <div class="content-box">
+      <h4>To RAISE pH (Lower Acidity):</h4>
+      <ul>
+        <li>Add agricultural limestone (takes 3-6 months)</li>
+        <li>Wood ash (use sparingly, 5-10 tons/acre)</li>
+        <li>Ground oyster shells or coral</li>
+        <li>Apply 1-2 tons per acre per pH point</li>
+      </ul>
+
+      <h4>To LOWER pH (Increase Acidity):</h4>
+      <ul>
+        <li>Add sulfur (2-4 tons/acre per pH point)</li>
+        <li>Acidifying fertilizers (ammonium sulfate)</li>
+        <li>Peat moss (20-30% of top 6 inches)</li>
+        <li>Pine needles or oak leaves</li>
+      </ul>
+    </div>
+
+    <h3>💡 Pro Tips</h3>
+    <div class="info-box">
+      <ul>
+        <li>Test soil in fall to adjust for spring planting</li>
+        <li>Recheck every 2 years once stable</li>
+        <li>Small pH adjustments take time - be patient</li>
+        <li>Add compost (buffers pH naturally)</li>
+        <li>Problem crops often indicate pH issues first</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- SOWING CALENDAR -->
+<div class="tab-content" id="sowing-tab">
+  <section>
+    <h2>📅 Sowing Calendar - Seasonal Planting Guide</h2>
+
+    <h3>🌱 SPRING (March-May)</h3>
+    <table>
+      <tr>
+        <th>Crop</th>
+        <th>Plant</th>
+        <th>Harvest</th>
+        <th>Days</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>Tomato</td>
+        <td>After frost</td>
+        <td>60-85 days</td>
+        <td>60-85</td>
+        <td>Start from seed indoors 6-8 weeks</td>
+      </tr>
+      <tr>
+        <td>Lettuce</td>
+        <td>Early spring</td>
+        <td>30-45 days</td>
+        <td>30-45</td>
+        <td>Direct seed, succession plant</td>
+      </tr>
+      <tr>
+        <td>Carrots</td>
+        <td>Early-mid spring</td>
+        <td>60-80 days</td>
+        <td>60-80</td>
+        <td>Direct seed, thin seedlings</td>
+      </tr>
+      <tr>
+        <td>Peas</td>
+        <td>Very early spring</td>
+        <td>50-70 days</td>
+        <td>50-70</td>
+        <td>Cool season crop, trellis varieties</td>
+      </tr>
+      <tr>
+        <td>Spinach</td>
+        <td>Early spring</td>
+        <td>40-50 days</td>
+        <td>40-50</td>
+        <td>Cold tolerant, direct seed</td>
+      </tr>
+    </table>
+
+    <h3>☀️ SUMMER (June-August)</h3>
+    <table>
+      <tr>
+        <th>Crop</th>
+        <th>Plant</th>
+        <th>Harvest</th>
+        <th>Days</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>Beans</td>
+        <td>After last frost</td>
+        <td>50-60 days</td>
+        <td>50-60</td>
+        <td>Direct seed, nitrogen fixer</td>
+      </tr>
+      <tr>
+        <td>Corn</td>
+        <td>Late spring</td>
+        <td>60-90 days</td>
+        <td>60-90</td>
+        <td>Succession plant every 2 weeks</td>
+      </tr>
+      <tr>
+        <td>Cucumber</td>
+        <td>Early summer</td>
+        <td>50-70 days</td>
+        <td>50-70</td>
+        <td>Trellis for space saving</td>
+      </tr>
+      <tr>
+        <td>Zucchini</td>
+        <td>Early-mid summer</td>
+        <td>45-55 days</td>
+        <td>45-55</td>
+        <td>Prolific producer, pick young</td>
+      </tr>
+      <tr>
+        <td>Peppers</td>
+        <td>After frost (transplant)</td>
+        <td>60-90 days</td>
+        <td>60-90</td>
+        <td>Start indoors 8-10 weeks early</td>
+      </tr>
+    </table>
+
+    <h3>🍂 FALL (September-October)</h3>
+    <table>
+      <tr>
+        <th>Crop</th>
+        <th>Plant</th>
+        <th>Harvest</th>
+        <th>Days</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>Broccoli</td>
+        <td>Mid-summer</td>
+        <td>55-70 days</td>
+        <td>55-70</td>
+        <td>Start indoors, transplant in July</td>
+      </tr>
+      <tr>
+        <td>Cabbage</td>
+        <td>Mid-summer</td>
+        <td>60-90 days</td>
+        <td>60-90</td>
+        <td>Storage crop, stores well</td>
+      </tr>
+      <tr>
+        <td>Kale</td>
+        <td>Mid-summer</td>
+        <td>50-65 days</td>
+        <td>50-65</td>
+        <td>Cold hardy, sweeter after frost</td>
+      </tr>
+      <tr>
+        <td>Radish</td>
+        <td>Late summer</td>
+        <td>25-30 days</td>
+        <td>25-30</td>
+        <td>Quick crop, succession plant</td>
+      </tr>
+      <tr>
+        <td>Turnip</td>
+        <td>Late summer</td>
+        <td>50-75 days</td>
+        <td>50-75</td>
+        <td>Root storage, cool season</td>
+      </tr>
+    </table>
+
+    <h3>❄️ WINTER (November-February)</h3>
+    <div class="content-box">
+      <h4>Cool Season Crops (if unheated greenhouse):</h4>
+      <ul>
+        <li><strong>Microgreens:</strong> Indoors, year-round, 10-14 days</li>
+        <li><strong>Sprouts:</strong> Indoors, 5-7 days, no soil needed</li>
+        <li><strong>Winter lettuce:</strong> Cold frame/greenhouse</li>
+        <li><strong>Mâche:</strong> Very cold hardy, outdoor</li>
+        <li><strong>Asian greens:</strong> Cold tolerant, outdoor</li>
+      </ul>
+    </div>
+
+    <h3>📍 Succession Planting Strategy</h3>
+    <div class="info-box">
+      <p><strong>Plant same crop every 2-3 weeks for continuous harvest:</strong></p>
+      <ul>
+        <li>Lettuce: Every 2 weeks</li>
+        <li>Beans: Every 3 weeks</li>
+        <li>Corn: Every 2-3 weeks</li>
+        <li>Radish: Every week</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- FISHERIES -->
+<div class="tab-content" id="fisheries-tab">
+  <section>
+    <h2>🐟 Fisheries - Complete Aquaculture Guide</h2>
+
+    <h3>🐠 Popular Fish Species</h3>
+    <table>
+      <tr>
+        <th>Species</th>
+        <th>Temperature</th>
+        <th>Growth Rate</th>
+        <th>Best For</th>
+      </tr>
+      <tr>
+        <td>Tilapia</td>
+        <td>75-85°F</td>
+        <td>Fast</td>
+        <td>Beginners, warm climate</td>
+      </tr>
+      <tr>
+        <td>Catfish</td>
+        <td>75-85°F</td>
+        <td>Medium</td>
+        <td>Bottom feeding, hardy</td>
+      </tr>
+      <tr>
+        <td>Carp</td>
+        <td>65-75°F</td>
+        <td>Slow-Med</td>
+        <td>Large, long-lived</td>
+      </tr>
+      <tr>
+        <td>Trout</td>
+        <td>55-65°F</td>
+        <td>Medium</td>
+        <td>Cold water, oxygenation needed</td>
+      </tr>
+    </table>
+
+    <h3>💧 Water Quality Parameters</h3>
+    <table>
+      <tr>
+        <th>Parameter</th>
+        <th>Ideal</th>
+        <th>Effect if Wrong</th>
+      </tr>
+      <tr>
+        <td>pH</td>
+        <td>6.5-8.0</td>
+        <td>Low=toxic, High=nutrient lock</td>
+      </tr>
+      <tr>
+        <td>Dissolved O₂</td>
+        <td>5-8 ppm</td>
+        <td>Low stress/death</td>
+      </tr>
+      <tr>
+        <td>Ammonia (NH₃)</td>
+        <td>0-0.02 ppm</td>
+        <td>Toxic even low levels</td>
+      </tr>
+      <tr>
+        <td>Nitrite (NO₂)</td>
+        <td>0 ppm</td>
+        <td>Deadly poison</td>
+      </tr>
+    </table>
+
+    <h3>🍽️ Stocking Density</h3>
+    <div class="content-box">
+      <ul>
+        <li><strong>Tilapia:</strong> 100-200 per 100 gallons</li>
+        <li><strong>Catfish:</strong> 50-100 per 100 gallons</li>
+        <li><strong>Carp:</strong> 30-50 per 100 gallons</li>
+        <li><strong>Trout:</strong> 20-50 per 100 gallons (high oxygen)</li>
+      </ul>
+    </div>
+
+    <h3>📋 Maintenance Schedule</h3>
+    <div class="content-box">
+      <ul>
+        <li><strong>Daily:</strong> Check fish behavior, feed</li>
+        <li><strong>Weekly:</strong> Monitor water level, remove debris</li>
+        <li><strong>Monthly:</strong> Test pH, ammonia, dissolved O₂</li>
+        <li><strong>Quarterly:</strong> 25% water change</li>
+        <li><strong>Annually:</strong> Clean inlets/outlets, repair</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- INTEGRATED FARMING -->
+<div class="tab-content" id="integrated-tab">
+  <section>
+    <h2>🔗 Integrated Farming - System Synergies</h2>
+
+    <h3>📋 System Components</h3>
+    <table>
+      <tr>
+        <th>Component</th>
+        <th>Output</th>
+        <th>Benefit</th>
+      </tr>
+      <tr>
+        <td>Crops</td>
+        <td>Food, feed, organic matter</td>
+        <td>Primary production</td>
+      </tr>
+      <tr>
+        <td>Livestock</td>
+        <td>Meat, dairy, manure</td>
+        <td>Nutrient cycling</td>
+      </tr>
+      <tr>
+        <td>Aquaculture</td>
+        <td>Protein, nutrient-rich water</td>
+        <td>Waste filtration</td>
+      </tr>
+      <tr>
+        <td>Forestry</td>
+        <td>Timber, fruit, fuel</td>
+        <td>Microclimate, shelter</td>
+      </tr>
+      <tr>
+        <td>Compost</td>
+        <td>Fertilizer, energy</td>
+        <td>Waste reduction</td>
+      </tr>
+    </table>
+
+    <h3>🌾 Benefits Summary</h3>
+    <div class="info-box">
+      <ul>
+        <li>Multiple income streams</li>
+        <li>Reduced external inputs (50-70% savings)</li>
+        <li>Risk management through diversity</li>
+        <li>Better soil health long-term</li>
+        <li>Labor efficiency through complementary tasks</li>
+        <li>Closed-loop sustainable system</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- FARM TYPES -->
+<div class="tab-content" id="farmtypes-tab">
+  <section>
+    <h2>🌾 Farming Types - 12 Approaches</h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>1. Organic Farming</h3>
+        <p>No synthetics, certification required, 3-year transition. Scale: Any | Cost: Moderate-High</p>
+      </div>
+      <div class="card">
+        <h3>2. Agroforestry</h3>
+        <p>Trees + crops/livestock. Alley cropping, silvopasture. 5-10 year ROI</p>
+      </div>
+      <div class="card">
+        <h3>3. Market Gardening</h3>
+        <p>Intensive vegetables, 0.5-5 acres, direct-to-consumer. High profit/acre</p>
+      </div>
+      <div class="card">
+        <h3>4. Grain Farming</h3>
+        <p>Large-scale monoculture, 100+ acres. Commodity-price dependent</p>
+      </div>
+      <div class="card">
+        <h3>5. Livestock Farming</h3>
+        <p>Grazing, intensive, or rotational. Regenerative potential</p>
+      </div>
+      <div class="card">
+        <h3>6. Apiculture</h3>
+        <p>Beekeeping, urban-friendly. Multiple products: honey, wax, propolis</p>
+      </div>
+      <div class="card">
+        <h3>7. Specialty Crops</h3>
+        <p>Vineyards, nuts, berries. Premium pricing, long establishment</p>
+      </div>
+      <div class="card">
+        <h3>8. Hydroponics</h3>
+        <p>Soilless, controlled environment. 10-20x yield vs traditional</p>
+      </div>
+      <div class="card">
+        <h3>9. Aquaculture</h3>
+        <p>Fish/shellfish farming. High protein production</p>
+      </div>
+      <div class="card">
+        <h3>10. Regenerative Ag</h3>
+        <p>Cover crops, rotation, no-till. Carbon sequestration focus</p>
+      </div>
+      <div class="card">
+        <h3>11. Mushroom Farm</h3>
+        <p>Controlled environment, uses waste. $10-20/lb, quick ROI</p>
+      </div>
+      <div class="card">
+        <h3>12. Medicinal Plants</h3>
+        <p>Ginseng, echinacea. Premium pricing (10-100x commodity)</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DEMO MODELS -->
+<div class="tab-content" id="demos-tab">
+  <section>
+    <h2>🎯 Farm System Demo Models (15 Real Examples)</h2>
+
+    <div class="content-box">
+      <h3>Model 1: Small Homestead (0.5 acres)</h3>
+      <p><strong>Setup:</strong> Compost 20% → Vegetable Garden 30% → Chicken Coop 15% → Fruit Trees 25% → Rainwater Tank 10%</p>
+      <p><strong>Annual Yield:</strong> 200-300 lbs vegetables, 60-80 dozen eggs, 50 lbs fruit</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 2: Aquaponics (200 sq ft)</h3>
+      <p><strong>Setup:</strong> Fish Tank (Tilapia) → Growing Beds (Lettuce, basil, tomatoes) → Biofilter → Clean water</p>
+      <p><strong>Yield:</strong> 30-50 lbs greens/month + harvestable fish, 90% water savings</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 3: Integrated 2-Acre Farm</h3>
+      <p><strong>Setup:</strong> Grain/Fodder 0.7 acres → Rotational Pasture 0.5 acres → Compost 0.3 acres → Food Forest 0.5 acres</p>
+      <p><strong>Annual Income:</strong> Milk/Cheese $3,000 + Meat $2,000 + Compost $1,000 + Fruit/Nuts $1,500</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 4: Regenerative Grain (100 acres)</h3>
+      <p><strong>Rotation:</strong> Wheat → Cover Crops → Legumes → Corn + Livestock</p>
+      <p><strong>Benefits:</strong> 1-2% organic matter increase annually, 50% fewer chemicals, better drought tolerance</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 5: Vertical Farm (1,000 sq ft)</h3>
+      <p><strong>Setup:</strong> LED lights → 6 hydroponic levels → Automated controls</p>
+      <p><strong>Yield:</strong> 200+ lbs microgreens, 99% water recycled, 10-20x space efficiency</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 6: Agroforestry - Alley Cropping (5 acres)</h3>
+      <p><strong>Timeline:</strong> Plant trees → Crop alleys (Wheat, corn, legumes) → Transition to shade-tolerant crops</p>
+      <p><strong>Returns:</strong> Years 1-5 high crop revenue | Years 15+ timber + understory income</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 7: CSA Farm (10 acres)</h3>
+      <p><strong>Model:</strong> Diversified crops → 52 weekly harvests → 100-200 member subscriptions</p>
+      <p><strong>Revenue:</strong> $100-150k annually, direct sales bypass retail</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 8: Fish + Crop Integration (3 acres)</h3>
+      <p><strong>Setup:</strong> Fish pond (Tilapia) → Nutrient-rich water → Vegetable beds</p>
+      <p><strong>Harvest:</strong> 2,000-3,000 lbs fish/year + 5,000 lbs vegetables, minimal inputs</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 9: Mushroom Farm (400 sq ft)</h3>
+      <p><strong>Process:</strong> Substrate prep → Growing racks → Humidity/temp control → 4-6 flushes/year</p>
+      <p><strong>Revenue:</strong> 100-200 lbs dried ($1,000-4,000 part-time)</p>
+    </div>
+
+    <div class="content-box">
+      <h3>Model 10: Rotational Grazing (30 acres)</h3>
+      <p><strong>Cycle:</strong> Move herd/flock weekly to fresh pasture → 30+ day rest → Grass recovery</p>
+      <p><strong>Benefits:</strong> Soil health, animal health, premium products, sustainable</p>
+    </div>
+  </section>
+</div>
+
+<!-- TOOLS -->
+<div class="tab-content" id="tools-tab">
+  <section>
+    <h2>🔧 Agricultural Calculators</h2>
+
+    <h3>💧 Water Calculator</h3>
+    <div class="content-box">
+      <div style="margin: 16px 0;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Farm Area (sq meters)</label>
+        <input type="number" id="areaInput" placeholder="e.g., 1000" value="1000" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text);">
+      </div>
+      <div style="margin: 16px 0;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Annual Rainfall (mm)</label>
+        <input type="number" id="rainfallInput" placeholder="e.g., 800" value="800" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text);">
+      </div>
+      <button onclick="calculateWater()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Calculate Water Needs</button>
+      <div id="waterResult" style="display: none; background: var(--border); padding: 16px; border-radius: 8px; margin-top: 16px; text-align: center; font-weight: 600;"></div>
+    </div>
+
+    <h3>🐟 Fish Stocking Calculator</h3>
+    <div class="content-box">
+      <div style="margin: 16px 0;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Pond Volume (gallons)</label>
+        <input type="number" id="fishPondInput" placeholder="e.g., 5000" value="5000" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text);">
+      </div>
+      <div style="margin: 16px 0;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Fish Type</label>
+        <select id="fishTypeSelect" style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text);">
+          <option value="tilapia">Tilapia (100-200 per 100 gal)</option>
+          <option value="catfish">Catfish (50-100 per 100 gal)</option>
+          <option value="carp">Carp (30-50 per 100 gal)</option>
+          <option value="trout">Trout (20-50 per 100 gal)</option>
+        </select>
+      </div>
+      <button onclick="calculateFishStock()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Calculate Stock</button>
+      <div id="fishResult" style="display: none; background: var(--border); padding: 16px; border-radius: 8px; margin-top: 16px; text-align: center; font-weight: 600;"></div>
+    </div>
+  </section>
+</div>
+
+<!-- QUIZZES -->
+<div class="tab-content" id="quizzes-tab">
+  <section>
+    <h2>🧠 Knowledge Quiz - 80 Questions, 4 Levels</h2>
+
+    <div id="quizSelector" class="quiz-selector" style="display: grid;">
+      <button class="quiz-btn easy" onclick="startQuiz('easy')">🟢 Easy (20 Questions)</button>
+      <button class="quiz-btn medium" onclick="startQuiz('medium')">🟡 Medium (20 Questions)</button>
+      <button class="quiz-btn hard" onclick="startQuiz('hard')">🔴 Hard (20 Questions)</button>
+      <button class="quiz-btn ultra" onclick="startQuiz('ultra')">⚫ Ultra Hard (20 Questions)</button>
+    </div>
+
+    <div id="quizContainer" style="display: none;">
+      <div class="progress-bar" style="margin: 20px 0;">
         <div class="progress-fill" id="progressFill"></div>
       </div>
-      <div class="progress-text">
-        <span id="currentQuestion">1</span> / <span id="totalQuestions">20</span>
-      </div>
-      <button class="quiz-exit-btn" onclick="exitQuiz()">✕ Exit</button>
-    </div>
-
-    <div class="quiz-content">
+      <p style="text-align: center; font-size: 14px; font-weight: 600;">Question <span id="currentQ">1</span>/<span id="totalQ">20</span></p>
       <h3 id="questionText"></h3>
-      <div class="options-grid" id="optionsGrid"></div>
+      <div id="optionsGrid" style="display: grid; gap: 10px; margin: 20px 0;"></div>
+      <button id="nextBtn" onclick="nextQuestion()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Next →</button>
     </div>
 
-    <div class="quiz-navigation">
-      <button id="prevBtn" class="quiz-nav-btn" onclick="previousQuestion()" style="display: none;">← Previous</button>
-      <button id="nextBtn" class="quiz-nav-btn" onclick="nextQuestion()">Next →</button>
-    </div>
-  </div>
-
-  <div id="quizResults" class="quiz-results" style="display: none;">
-    <div class="results-content">
+    <div id="quizResults" style="display: none; text-align: center;">
       <h2>Quiz Complete! 🎉</h2>
-      <div class="score-circle">
-        <div class="score-text" id="scoreText">0%</div>
+      <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; margin: 20px auto; color: white;">
+        <div style="font-size: 48px; font-weight: 700;" id="scoreText">0%</div>
       </div>
-      <p id="scoreMessage"></p>
-      <div class="results-summary" id="resultsSummary"></div>
-      <button class="cta-button" onclick="backToQuizzes()">Try Another Quiz</button>
+      <p id="scoreMessage" style="font-size: 16px; font-weight: 600;"></p>
+      <button onclick="backToQuizzes()" style="width: 100%; max-width: 300px; margin-top: 20px; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Try Another Quiz</button>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
 <!-- Footer -->
-
-<section id="knowledge-library" class="section">
-  <div class="section-header">
-    <h2>🌱 AgriMitra Knowledge Library</h2>
-    <p>Explore detailed information on farming systems, soil, water, biodiversity and farm planning.</p>
-  </div>
-  <div class="knowledge-grid">
-    <article class="knowledge-card"><h3>🌱 Permaculture</h3><p>Principles, ethics, zones, food forests, guilds, water and 1-acre planning.</p><button onclick="openKnowledgePage('permaculture')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🌾 Organic Farming</h3><p>Soil fertility, compost, rotations, pest management and organic production.</p><button onclick="openKnowledgePage('organic')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🌍 Regenerative Farming</h3><p>Soil cover, biodiversity, reduced disturbance and healthy water cycles.</p><button onclick="openKnowledgePage('regenerative')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🌳 Agroforestry</h3><p>Trees, crops and livestock working together in productive systems.</p><button onclick="openKnowledgePage('agroforestry')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>💧 Water Management</h3><p>Rainwater harvesting, swales, ponds, irrigation and mulching.</p><button onclick="openKnowledgePage('water')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🌍 Soil Health</h3><p>Soil types, pH, organic matter, compost and soil organisms.</p><button onclick="openKnowledgePage('soil')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🐝 Biodiversity</h3><p>Pollinators, beneficial insects, birds, habitat and natural pest balance.</p><button onclick="openKnowledgePage('biodiversity')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🏡 Farm Planning</h3><p>Observation, zoning, access, water placement and integrated farm design.</p><button onclick="openKnowledgePage('planning')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🌿 Natural Farming</h3><p>Biological processes, soil cover, farm resources and observation.</p><button onclick="openKnowledgePage('natural')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🐄 Integrated Farming</h3><p>Connecting crops, livestock, fish, poultry, compost and water systems.</p><button onclick="openKnowledgePage('integrated')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>💧 Hydroponics</h3><p>Soilless production, systems, nutrients, advantages and limitations.</p><button onclick="openKnowledgePage('hydroponics')">Read Full Page →</button></article>
-    <article class="knowledge-card"><h3>🐟 Aquaponics</h3><p>Fish and plant production in a connected recirculating system.</p><button onclick="openKnowledgePage('aquaponics')">Read Full Page →</button></article>
-  </div>
-</section>
-
-<div id="knowledgePage" class="knowledge-page" aria-hidden="true">
-  <div class="knowledge-page-inner">
-    <button class="knowledge-back" onclick="closeKnowledgePage()">← Back</button>
-    <div id="knowledgePageContent"></div>
-  </div>
-</div>
-
-<footer id="footer">
-  <h2>🌱 Get Started Today</h2>
-  <p>Explore the knowledge base above and learn how to implement permaculture principles on your land.</p>
-  <p style="margin-top: 20px; opacity: 0.8;">© 2024 My Permaculture Farm. All rights reserved.</p>
+<footer>
+  <h2>🌾 AgriMitra Complete</h2>
+  <p>Complete Agricultural Knowledge & Farming Intelligence Platform</p>
+  <p style="font-size: 12px; opacity: 0.8; margin-top: 16px;">v4.0 | © 2024 AgriMitra | All Features Included</p>
 </footer>
 
-<!-- Article Modal -->
-<div class="modal" id="articleModal">
-  <div class="modal-content">
-    <button class="close-modal" onclick="closeArticle()">×</button>
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<!-- Chatbot -->
-
-  <div class="chatbot-input-area">
-    <input 
-      type="text" 
-      class="chatbot-input" 
-      id="chatbotInput" 
-      placeholder="Ask me something..."
-      onkeypress="handleChatKeypress(event)"
-    />
-    <button class="chatbot-send" id="chatbotSend" onclick="sendChatMessage()">→</button>
-  </div>
-</div>
-
 <script>
-// Article Data
-const articleData = {
-  landguide: {
-    title: "🏞️ Land Assessment Guide",
-    body: `<h1>Land Assessment for Permaculture</h1>
-      <h2>Key Factors to Evaluate</h2>
-      <h3>Slope and Topography</h3>
-      <p>Slope determines water flow and erosion patterns. Use contour lines to guide water management features like swales and terraces. Gentle slopes (5-15%) are ideal for most applications.</p>
-      <h3>Aspect and Sun Exposure</h3>
-      <p>The direction your land faces affects sun exposure, wind patterns, and frost pockets. South-facing slopes are warmer in northern hemispheres. Map microclimates to place plants appropriately.</p>
-      <h3>Water Flow and Drainage</h3>
-      <p>Observe where water naturally flows during rain. Identify low points, seasonal streams, and problem areas. This guides swale placement and pond locations.</p>
-      <h3>Existing Vegetation</h3>
-      <p>Native plants indicate growing conditions and potential uses. Trees show fertility and rainfall patterns. Retain valuable existing vegetation as part of your design.</p>
-      <h3>Soil Depth and Type</h3>
-      <p>Dig test holes to evaluate soil depth, structure, and composition. Look for compaction, hardpan, or clay layers that might affect drainage or root development.</p>
-      <h3>Climate and Rainfall</h3>
-      <p>Record seasonal temperature variations, frost dates, and annual rainfall. This guides species selection and water management design.</p>`
-  },
-  phguide: {
-    title: "📊 Soil pH Guide",
-    body: `<h1>Understanding Soil pH</h1>
-      <h2>What is pH?</h2>
-      <p>pH measures acidity or alkalinity on a scale of 0-14. A pH of 7 is neutral. Below 7 is acidic, above 7 is alkaline. Most plants prefer slightly acidic soil (6.0-7.0).</p>
-      <h2>Why pH Matters</h2>
-      <p>Soil pH affects nutrient availability to plants. Nutrients like nitrogen, phosphorus, and potassium are most available at pH 6.0-7.0. Iron and manganese become too available at low pH and unavailable at high pH.</p>
-      <h2>Testing Your pH</h2>
-      <ul>
-        <li>Home test kits: Inexpensive but less accurate</li>
-        <li>Digital pH meters: Moderately accurate</li>
-        <li>Lab analysis: Most accurate, includes detailed nutrient data</li>
-      </ul>
-      <h2>Adjusting pH</h2>
-      <h3>To Raise pH (Acidic soil):</h3>
-      <ul>
-        <li>Add agricultural limestone</li>
-        <li>Use wood ash (sparingly)</li>
-        <li>Apply ground oyster shells</li>
-      </ul>
-      <h3>To Lower pH (Alkaline soil):</h3>
-      <ul>
-        <li>Add sulfur</li>
-        <li>Use acidifying fertilizers</li>
-        <li>Incorporate peat moss or pine needles</li>
-      </ul>`
-  },
-  soiltesting: {
-    title: "🔍 Soil Testing Guide",
-    body: `<h1>Comprehensive Soil Testing</h1>
-      <h2>What to Test For</h2>
-      <h3>Major Nutrients (NPK)</h3>
-      <p>Nitrogen, Phosphorus, and Potassium are essential for plant growth. Testing reveals current levels and guides fertilization decisions.</p>
-      <h3>Micronutrients</h3>
-      <p>Calcium, magnesium, sulfur, boron, copper, iron, manganese, molybdenum, and zinc. Deficiencies cause specific plant symptoms.</p>
-      <h3>Organic Matter</h3>
-      <p>Indicates soil health and water-holding capacity. Target 3-5% organic matter. Compost additions increase this over time.</p>
-      <h3>Microbial Life</h3>
-      <p>Living soil microbes process nutrients and improve structure. Regular compost additions support microbial populations.</p>
-      <h2>When to Test</h2>
-      <p>Test every 2-3 years for maintenance, or annually on new land. Fall is ideal as it allows time to adjust before spring planting.</p>
-      <h2>Interpreting Results</h2>
-      <p>Lab reports show nutrient levels and recommendations. Base amendment strategies on these results rather than guessing.</p>`
-  },
-  foodforest: {
-    title: "🌳 Food Forest",
-    body: `<h1>Food Forest</h1>
-      <h2>Summary</h2>
-      <p>A food forest is a diversified planting system inspired by the layered structure of natural vegetation. It can combine fruit trees, smaller trees, shrubs, herbs, climbers and ground-level plants.</p>
-      <h2>Background</h2>
-      <p>Traditional farming systems in many regions have long combined trees and crops. Modern food-forest design develops these ideas into a planned, multi-layer growing system that maximizes both productivity and ecological health.</p>
-      <h2>Main Components</h2>
-      <ul>
-        <li><strong>Upper tree layer:</strong> Tall fruit and nut trees providing canopy structure</li>
-        <li><strong>Small trees and shrubs:</strong> Medium-height species creating understory</li>
-        <li><strong>Herbaceous plants:</strong> Perennial and annual crops at mid-height</li>
-        <li><strong>Ground-cover plants:</strong> Low-growing nitrogen fixers and edibles</li>
-        <li><strong>Climbers:</strong> Vines maximizing vertical space</li>
-      </ul>
-      <h2>Importance</h2>
-      <p>It can increase plant diversity, make use of different growing levels and provide habitats for useful organisms. The exact results depend on plant selection, climate, soil, water and management.</p>
-      <h2>Role in Our Farm</h2>
-      <p>The food forest can be linked with water-management areas, compost, paths and other production zones to create an integrated system.</p>
-      <h2>Important Considerations</h2>
-      <p>Choose species according to local conditions, spacing, sunlight, water availability and maintenance needs. Start small and observe existing conditions before implementing.</p>`
-  },
-  rainwater: {
-    title: "💧 Rainwater Harvesting",
-    body: `<h1>Rainwater Harvesting</h1>
-      <h2>Summary</h2>
-      <p>Rainwater harvesting means collecting and managing rainfall so that water can be stored, infiltrated or used instead of being allowed to run off unnecessarily.</p>
-      <h2>Why It Is Important</h2>
-      <p>It can improve water availability during suitable periods and help reduce uncontrolled runoff. Storage and infiltration design should match rainfall, soil and site conditions.</p>
-      <h2>Main Methods</h2>
-      <ul>
-        <li><strong>Roof-water collection:</strong> Capturing water from building surfaces</li>
-        <li><strong>Storage tanks:</strong> Above or below-ground containers</li>
-        <li><strong>Swales and infiltration areas:</strong> Channeling water into the soil</li>
-        <li><strong>Farm ponds:</strong> Larger storage features</li>
-        <li><strong>Mulched planting areas:</strong> Retaining moisture in soil</li>
-      </ul>
-      <h2>Role in Our Farm</h2>
-      <p>Water features can be planned together with crop areas, paths and the natural slope of the land to create efficient flow systems.</p>
-      <h2>Important Considerations</h2>
-      <p>Water quality, overflow routes, mosquito management, structural safety and local regulations should be carefully considered during design and implementation.</p>`
-  },
-  compost: {
-    title: "♻️ Compost & Soil Health",
-    body: `<h1>Compost & Soil Health</h1>
-      <h2>Summary</h2>
-      <p>Composting converts suitable organic materials into a more stable material that can be returned to the soil, improving its quality and fertility.</p>
-      <h2>Why It Is Important</h2>
-      <p>Compost can contribute organic matter and nutrients and may improve soil structure and moisture-holding characteristics. Results depend on the material and how the compost is made and used.</p>
-      <h2>Typical Materials</h2>
-      <ul>
-        <li>Plant residues and garden waste</li>
-        <li>Dry leaves and wood chips</li>
-        <li>Grass and other suitable green material</li>
-        <li>Animal manure where appropriate</li>
-        <li>Food scraps (non-meat)</li>
-      </ul>
-      <h2>Role in Our Farm</h2>
-      <p>Compost can connect vegetable production, tree planting and animal areas by recycling suitable organic residues into valuable soil amendment.</p>
-      <h2>Important Considerations</h2>
-      <p>Use clean feedstock, maintain suitable moisture and aeration, and use mature compost appropriately. Proper composting takes time and patience for best results.</p>`
-  },
-  bees: {
-    title: "🐝 Beekeeping",
-    body: `<h1>Beekeeping</h1>
-      <h2>Summary</h2>
-      <p>Beekeeping involves managing honey-bee colonies for products such as honey and beeswax. Bees also interact with flowering plants through pollination.</p>
-      <h2>Why It Is Important</h2>
-      <p>Pollinating insects are important components of many agricultural ecosystems. A farm with diverse flowering plants can provide forage at different times of the year for bee colonies.</p>
-      <h2>Farm Connection</h2>
-      <p>Flowering trees, shrubs and other plants can be planned around the farm while keeping hives in a suitable location protected from disturbance.</p>
-      <h2>Important Considerations</h2>
-      <ul>
-        <li>Beekeeping requires proper training and education</li>
-        <li>Safe hive placement away from high-traffic areas</li>
-        <li>Suitable equipment and protective gear</li>
-        <li>Attention to bee health and disease management</li>
-        <li>Local rules and expert guidance must be followed</li>
-      </ul>`
-  },
-  waterzones: {
-    title: "🌊 Swales & Farm Pond",
-    body: `<h1>Swales & Farm Pond</h1>
-      <h2>Summary</h2>
-      <p>Swales and ponds are different features that may form part of a wider water-management plan for capturing and storing water.</p>
-      <h2>Swales</h2>
-      <p>A swale is a shallow landscape feature designed to slow and guide surface water, often along a contour. Its suitability depends on slope, soil, rainfall and site design. Swales can be planted with trees or left as open channels.</p>
-      <h2>Farm Pond</h2>
-      <p>A farm pond is a storage basin that can hold water for appropriate farm uses. Its location, capacity, embankment and overflow arrangements require careful planning to ensure structural integrity and environmental safety.</p>
-      <h2>Importance</h2>
-      <p>Together with vegetation and soil-management practices, these features can help organize water movement across a farm and reduce drought stress during dry periods.</p>`
-  },
-  oneacre: {
-    title: "🌱 1-Acre Farm Plan",
-    body: `<h1>1-Acre Farm Plan</h1>
-      <h2>Summary</h2>
-      <p>A 1-acre plan can demonstrate how a smaller area may be divided into connected zones rather than treating every activity separately.</p>
-      <h2>Possible Zones</h2>
-      <ul>
-        <li><strong>Food forest and fruit trees:</strong> Diverse, productive canopy area</li>
-        <li><strong>Seasonal vegetable area:</strong> Rotational growing beds</li>
-        <li><strong>Water harvesting/storage:</strong> Pond and swales</li>
-        <li><strong>Compost and soil-management:</strong> Organic matter processing</li>
-        <li><strong>Small animal or poultry area:</strong> Where suitable and allowed</li>
-        <li><strong>House, paths and service space:</strong> Access and dwelling areas</li>
-      </ul>
-      <h2>Importance</h2>
-      <p>Good zoning can reduce unnecessary movement, make maintenance easier and help different parts of the farm support one another through integrated resource cycling.</p>
-      <h2>Important Considerations</h2>
-      <p>The actual layout should be adapted to the site's dimensions, slope, climate, water availability, access, local rules and the farmer's goals and capabilities.</p>`
-  }
-};
+// ==================== CORE APP ====================
 
-// Theme Toggle
-const themeToggle = document.getElementById('themeToggle');
+// Theme
 const html = document.documentElement;
-
-// Check saved theme
 const savedTheme = localStorage.getItem('theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
 updateThemeIcon(savedTheme);
 
-themeToggle.addEventListener('click', () => {
+function toggleTheme() {
   const currentTheme = html.getAttribute('data-theme');
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   html.setAttribute('data-theme', newTheme);
   localStorage.setItem('theme', newTheme);
   updateThemeIcon(newTheme);
-  showToast(`Switched to ${newTheme} mode`);
-});
+  showToast(`${newTheme === 'light' ? '☀️ Light' : '🌙 Dark'} mode activated`);
+}
 
 function updateThemeIcon(theme) {
-  themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+  document.getElementById('themeToggle').textContent = theme === 'light' ? '🌙' : '☀️';
 }
 
-// Article Modal
-function openArticle(key) {
-  const article = articleData[key];
-  if (!article) return;
+// Sidebar Toggle
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+  document.getElementById('menuToggle').classList.toggle('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('menuToggle').classList.remove('active');
+}
+
+// Tabs
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   
-  const modal = document.getElementById('articleModal');
-  const body = document.getElementById('modalBody');
-  body.innerHTML = article.body;
-  modal.classList.add('show');
-  document.body.style.overflow = 'hidden';
-  showToast('Article loaded successfully');
-}
-
-function closeArticle() {
-  const modal = document.getElementById('articleModal');
-  modal.classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-// Close modal on outside click
-document.getElementById('articleModal').addEventListener('click', (e) => {
-  if (e.target.id === 'articleModal') closeArticle();
-});
-
-// Search & Filter
-const searchInput = document.getElementById('searchInput');
-const filterTags = document.querySelectorAll('.filter-tag');
-const articlesGrid = document.getElementById('articlesGrid');
-const articles = document.querySelectorAll('.article-card');
-
-let activeFilter = 'all';
-
-function filterArticles() {
-  articles.forEach(article => {
-    const category = article.getAttribute('data-category');
-    const title = article.textContent.toLowerCase();
-    const searchText = searchInput.value.toLowerCase();
-    
-    const matchesSearch = title.includes(searchText);
-    const matchesFilter = activeFilter === 'all' || category === activeFilter;
-    
-    if (matchesSearch && matchesFilter) {
-      article.style.display = '';
-      setTimeout(() => article.classList.add('reveal'), 10);
-    } else {
-      article.style.display = 'none';
-      article.classList.remove('reveal');
-    }
-  });
-}
-
-searchInput.addEventListener('input', filterArticles);
-
-filterTags.forEach(tag => {
-  tag.addEventListener('click', () => {
-    filterTags.forEach(t => t.classList.remove('active'));
-    tag.classList.add('active');
-    activeFilter = tag.getAttribute('data-filter');
-    filterArticles();
-  });
-});
-
-// Toast Notification
-function showToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  document.body.appendChild(toast);
+  const tabElement = document.getElementById(tabName + '-tab');
+  if (tabElement) tabElement.classList.add('active');
   
-  setTimeout(() => {
-    toast.style.animation = 'slideUp 0.3s ease-out reverse';
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
-}
-
-// Animated Counter
-function animateCounter(element, target, duration = 2000) {
-  const start = 0;
-  const increment = target / (duration / 16);
-  let current = start;
+  const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
   
-  const timer = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-      element.textContent = target;
-      clearInterval(timer);
-    } else {
-      element.textContent = Math.floor(current);
-    }
-  }, 16);
+  closeSidebar();
+  window.scrollTo(0, 0);
 }
 
-// Intersection Observer for animations
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: '0px 0px -50px 0px'
-};
+// ==================== CALCULATORS ====================
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('reveal');
-      
-      // Animate counters when stats section comes into view
-      if (entry.target.classList.contains('stat')) {
-        const number = entry.target.querySelector('.stat-number');
-        const target = parseInt(number.getAttribute('data-target'));
-        animateCounter(number, target);
-        observer.unobserve(entry.target);
-      }
-    }
-  });
-}, observerOptions);
+function calculateWater() {
+  const area = parseFloat(document.getElementById('areaInput').value) || 0;
+  const rainfall = parseFloat(document.getElementById('rainfallInput').value) || 0;
+  const waterNeeded = (area * rainfall) / 1000;
+  const result = document.getElementById('waterResult');
+  result.textContent = `💧 ${waterNeeded.toFixed(1)} cubic meters of water needed annually`;
+  result.style.display = 'block';
+  showToast('✅ Water calculation complete!');
+}
 
-// Observe all revealable elements
-document.querySelectorAll('.card, .article-card, .stat').forEach(el => {
-  observer.observe(el);
-});
-
-// Smooth scroll for nav links
-document.querySelectorAll('nav a').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-});
-
-// Add keyboard shortcut for closing modal (ESC key)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeArticle();
-  }
-});
-
-// Lazy load images effect
-window.addEventListener('load', () => {
-  console.log('Page fully loaded and ready!');
-});
-
-// ==================== CHATBOT FUNCTIONALITY ====================
-
-
-
-// Add welcome message with slight delay
-setTimeout(() => {
-  // Welcome message already shown in HTML, no need to duplicate
-}, 500);
+function calculateFishStock() {
+  const gallons = parseFloat(document.getElementById('fishPondInput').value) || 0;
+  const fishType = document.getElementById('fishTypeSelect').value;
+  
+  const densities = {
+    tilapia: { min: 1, max: 2 },
+    catfish: { min: 0.5, max: 1 },
+    carp: { min: 0.3, max: 0.5 },
+    trout: { min: 0.2, max: 0.5 }
+  };
+  
+  const density = densities[fishType];
+  const minFish = Math.floor(gallons / 100 * density.min * 100);
+  const maxFish = Math.floor(gallons / 100 * density.max * 100);
+  
+  const result = document.getElementById('fishResult');
+  result.textContent = `🐟 Stock ${minFish}-${maxFish} fish for optimal health`;
+  result.style.display = 'block';
+  showToast('✅ Stocking density calculated!');
+}
 
 // ==================== QUIZ SYSTEM ====================
 
 const quizData = {
   easy: [
-    { q: "What is permaculture?", options: ["A design system mimicking natural ecosystems", "Only about growing vegetables", "A type of fertilizer", "A farming tool"], correct: 0 },
-    { q: "What is the primary purpose of a food forest?", options: ["To create diverse food production using layers", "To maximize tree height", "To eliminate all weeds", "To reduce rainfall"], correct: 0 },
-    { q: "Which layer of a food forest typically includes fruit trees?", options: ["Upper tree layer", "Ground cover", "Root layer", "Air layer"], correct: 0 },
-    { q: "What does rainwater harvesting help with?", options: ["Water conservation and storage", "Reducing plant nutrients", "Increasing erosion", "Killing beneficial organisms"], correct: 0 },
-    { q: "What is composting primarily used for?", options: ["Converting organic waste into soil amendment", "Removing all organic matter", "Creating plastic products", "Burning garden waste"], correct: 0 },
-    { q: "What is soil pH?", options: ["A measure of acidity or alkalinity", "A fertilizer type", "A pest control method", "A watering schedule"], correct: 0 },
-    { q: "What pH range do most vegetables prefer?", options: ["6.0-7.0", "4.0-5.0", "8.0-9.0", "2.0-3.0"], correct: 0 },
-    { q: "Why are bees important in permaculture?", options: ["For pollination of plants", "For making honey only", "To control pests", "To modify soil pH"], correct: 0 },
-    { q: "What is a swale?", options: ["A shallow water channel that slows runoff", "A type of tree", "A pest insect", "A composting method"], correct: 0 },
-    { q: "What does mulch primarily do?", options: ["Retains soil moisture and regulates temperature", "Attracts pests", "Increases soil acidity", "Reduces plant growth"], correct: 0 },
-    { q: "What are microclimates?", options: ["Small areas with distinct climate conditions", "Tiny weather stations", "Weather prediction tools", "Climate change indicators"], correct: 0 },
-    { q: "What is the main benefit of crop rotation?", options: ["Reduces pest and disease buildup", "Increases soil acidity", "Eliminates beneficial insects", "Removes nitrogen from soil"], correct: 0 },
-    { q: "Which organisms help decompose compost?", options: ["Bacteria, fungi, and insects", "Only earthworms", "Only bacteria", "No organisms needed"], correct: 0 },
-    { q: "What does 'zone' mean in permaculture?", options: ["Areas organized by frequency of use", "A climate region", "A soil type", "A plant species"], correct: 0 },
-    { q: "How often should you test your soil?", options: ["Every 2-3 years", "Once a lifetime", "Never necessary", "Every month"], correct: 0 },
-    { q: "What is nitrogen fixation?", options: ["When plants capture nitrogen from air with bacterial help", "When soil loses nitrogen", "When nitrogen causes plant disease", "A fertilizer brand"], correct: 0 },
-    { q: "What are nitrogen-fixing plants?", options: ["Plants with legumes that build soil nitrogen", "Plants that remove nitrogen", "Only grass species", "Only trees"], correct: 0 },
-    { q: "What is a farm pond used for?", options: ["Water storage and habitat creation", "Only for decoration", "To eliminate runoff completely", "To increase soil erosion"], correct: 0 },
-    { q: "What percentage of organic matter is ideal in soil?", options: ["3-5%", "0%", "50%", "10-15%"], correct: 0 },
-    { q: "What is the main goal of permaculture design?", options: ["Create sustainable systems that mimic nature", "Maximize chemical inputs", "Eliminate all biodiversity", "Farm only monocultures"], correct: 0 }
+    { q: "What is permaculture?", options: ["Design system mimicking ecosystems", "Only vegetables", "Fertilizer", "Garden tool"], correct: 0 },
+    { q: "What's a food forest?", options: ["Diverse multi-layer planting", "Tree height", "Weed control", "Eliminate rainfall"], correct: 0 },
+    { q: "Rainwater harvesting helps with?", options: ["Water conservation", "Reduce nutrients", "Increase erosion", "Kill organisms"], correct: 0 },
+    { q: "Composting is for?", options: ["Convert waste to soil amendment", "Remove organic matter", "Create plastic", "Burn waste"], correct: 0 },
+    { q: "What is soil pH?", options: ["Acidity/alkalinity measure", "Fertilizer type", "Pest control", "Watering schedule"], correct: 0 },
+    { q: "Best pH for vegetables?", options: ["6.0-7.0", "4.0-5.0", "8.0-9.0", "2.0-3.0"], correct: 0 },
+    { q: "Why are bees important?", options: ["Pollination", "Honey only", "Pest control", "Modify pH"], correct: 0 },
+    { q: "What is a swale?", options: ["Shallow water channel", "Tree type", "Pest insect", "Compost method"], correct: 0 },
+    { q: "What does mulch do?", options: ["Retain moisture", "Attract pests", "Increase acidity", "Reduce growth"], correct: 0 },
+    { q: "Crop rotation benefit?", options: ["Reduce pests/disease", "Increase acidity", "Eliminate insects", "Remove nitrogen"], correct: 0 },
+    { q: "Who decomposes compost?", options: ["Bacteria, fungi, insects", "Only earthworms", "Only bacteria", "No organisms"], correct: 0 },
+    { q: "'Zone' means?", options: ["Areas by frequency of use", "Climate region", "Soil type", "Plant species"], correct: 0 },
+    { q: "Test soil how often?", options: ["Every 2-3 years", "Once lifetime", "Never", "Every month"], correct: 0 },
+    { q: "Nitrogen fixation is?", options: ["Plants capture N with bacteria", "Soil loses nitrogen", "Nitrogen causes disease", "Fertilizer brand"], correct: 0 },
+    { q: "Nitrogen-fixing plants?", options: ["Legumes", "Removing nitrogen", "Only grass", "Only trees"], correct: 0 },
+    { q: "Farm pond for?", options: ["Water storage/habitat", "Only decoration", "Eliminate runoff", "Increase erosion"], correct: 0 },
+    { q: "Ideal organic matter?", options: ["3-5%", "0%", "50%", "10-15%"], correct: 0 },
+    { q: "Permaculture's goal?", options: ["Sustainable systems like nature", "Maximize chemicals", "Eliminate biodiversity", "Monocultures"], correct: 0 },
+    { q: "Sowing calendar for?", options: ["Plan planting by season", "Sell seeds", "Identify pests", "No purpose"], correct: 0 },
+    { q: "Tilapia grows?", options: ["Fast in warm water", "Slow always", "Only cold", "Doesn't grow"], correct: 0 }
   ],
   medium: [
-    { q: "What is a keyline design in permaculture?", options: ["Water management following landscape contours", "A fence type", "A composting technique", "A plant spacing method"], correct: 0 },
-    { q: "How does nutrient availability change with soil pH?", options: ["Nutrients are most available at pH 6.0-7.0", "pH doesn't affect nutrient availability", "All nutrients available at any pH", "Only nitrogen affected by pH"], correct: 0 },
-    { q: "What is the difference between annuals and perennials?", options: ["Annuals last one season, perennials multiple years", "Annuals are always vegetables", "Perennials are always trees", "No practical difference"], correct: 0 },
-    { q: "What role do mycorrhizal fungi play in soil?", options: ["Help plants absorb nutrients and water", "Cause plant diseases", "Break down rocks", "Increase soil pH"], correct: 0 },
-    { q: "What is intercropping?", options: ["Growing different crops together for mutual benefit", "Planting in straight rows only", "Using crop rotation alone", "Planting one crop type"], correct: 0 },
-    { q: "How do you increase soil organic matter?", options: ["Add compost, mulch, and plant residues regularly", "Remove all organic matter", "Use only chemical fertilizers", "Compact soil deeply"], correct: 0 },
-    { q: "What is the 'golden hour' for pest management?", options: ["Early morning or late evening when beneficial insects are active", "Noon when sun is strongest", "Midnight", "Any time of day"], correct: 0 },
-    { q: "What does companion planting involve?", options: ["Planting compatible species together for mutual benefits", "Planting only one type per area", "Isolating all plant species", "Using pesticides as companions"], correct: 0 },
-    { q: "What is a guilds in permaculture?", options: ["Groups of plants that support each other", "Garden tools", "A type of soil", "A composting method"], correct: 0 },
-    { q: "How does contour plowing help on slopes?", options: ["Reduces water runoff and erosion", "Increases erosion", "Eliminates soil moisture", "Has no effect on slope"], correct: 0 },
-    { q: "What is the C:N ratio important for?", options: ["Balancing carbon and nitrogen in compost", "Determining plant height", "Measuring rainfall", "Nothing important"], correct: 0 },
-    { q: "What happens when soil pH is too low?", options: ["Some nutrients become unavailable to plants", "All nutrients are abundant", "Soil becomes too alkaline", "Plants grow faster"], correct: 0 },
-    { q: "What is 'chop and drop'?", options: ["Cutting plants and leaving them to decompose in place", "Harvesting and removing all material", "Burning plant material", "Chemical plant treatment"], correct: 0 },
-    { q: "How do hedgerows benefit permaculture systems?", options: ["Provide food, habitat, windbreak, and erosion control", "Only produce fruit", "Waste space with no benefits", "Increase pests"], correct: 0 },
-    { q: "What is the purpose of a rain garden?", options: ["Capture and filter runoff while allowing infiltration", "Only for decoration", "To eliminate all water", "To create flooding"], correct: 0 },
-    { q: "What are the benefits of leaf mold?", options: ["Improves soil structure and water retention", "Attracts pests", "Increases soil acidity rapidly", "Prevents plant growth"], correct: 0 },
-    { q: "How does windbreak design work?", options: ["Multiple tree/shrub rows angled to reduce wind gradually", "Single tall barrier", "Only fencing helps", "No effect possible"], correct: 0 },
-    { q: "What are 'greensands' and 'glacial rock dust'?", options: ["Slow-release mineral fertilizers", "Types of plants", "Pest control products", "Composting materials"], correct: 0 },
-    { q: "How do you encourage beneficial predators?", options: ["Provide diverse plants, water, and shelter", "Use pesticides to help them", "Remove all insects", "Plant only monocultures"], correct: 0 },
-    { q: "What is the 'edge effect' in permaculture?", options: ["Increased biodiversity and productivity where ecosystems meet", "Erosion along boundaries", "A design flaw", "Decreased production"], correct: 0 }
+    { q: "Keyline design is?", options: ["Water management by contours", "Fence type", "Compost tech", "Spacing method"], correct: 0 },
+    { q: "Nutrient availability peaks at?", options: ["pH 6.0-7.0", "All equal", "No effect", "Only nitrogen"], correct: 0 },
+    { q: "Annuals vs perennials?", options: ["One season vs multiple years", "Vegetables only", "Trees always", "No difference"], correct: 0 },
+    { q: "Mycorrhizal fungi role?", options: ["Help nutrient/water absorption", "Cause disease", "Break rocks", "Increase pH"], correct: 0 },
+    { q: "Intercropping is?", options: ["Grow different crops together", "Straight rows only", "Rotation only", "One crop type"], correct: 0 },
+    { q: "Increase organic matter?", options: ["Add compost, mulch, residues", "Remove organic", "Chemical fertilizers", "Compact deeply"], correct: 0 },
+    { q: "Companion planting?", options: ["Compatible species together", "One type only", "Isolate all", "Use pesticides"], correct: 0 },
+    { q: "Guild in permaculture?", options: ["Plants supporting each other", "Garden tools", "Soil type", "Compost method"], correct: 0 },
+    { q: "Contour plowing?", options: ["Reduce runoff/erosion", "Increase erosion", "Eliminate moisture", "No effect"], correct: 0 },
+    { q: "C:N ratio for?", options: ["Balance carbon/nitrogen in compost", "Plant height", "Measure rainfall", "Nothing"], correct: 0 },
+    { q: "'Chop and drop'?", options: ["Cut plants leave to decompose", "Harvest and remove", "Burn material", "Chemical treatment"], correct: 0 },
+    { q: "Hedgerows benefit?", options: ["Food, habitat, windbreak, erosion", "Only fruit", "Waste space", "Increase pests"], correct: 0 },
+    { q: "Rain garden purpose?", options: ["Capture/filter runoff infiltrate", "Only decoration", "Eliminate water", "Create flooding"], correct: 0 },
+    { q: "Leaf mold benefits?", options: ["Improve structure, water retention", "Attract pests", "Increase acidity", "Prevent growth"], correct: 0 },
+    { q: "Windbreak design?", options: ["Multiple rows angled", "Single barrier", "Fencing only", "No effect"], correct: 0 },
+    { q: "Encourage predators?", options: ["Provide plants, water, shelter", "Use pesticides", "Remove insects", "Monocultures"], correct: 0 },
+    { q: "'Edge effect'?", options: ["Increased diversity at boundaries", "Erosion", "Design flaw", "Lower production"], correct: 0 },
+    { q: "Aquaponics system?", options: ["Fish waste feeds plants", "No nutrients", "Animals die", "Plant only"], correct: 0 },
+    { q: "Succession planting?", options: ["Plant every 2-3 weeks continuous harvest", "Plant once", "No repeat", "Seasonal only"], correct: 0 },
+    { q: "Integrated farming?", options: ["Multiple enterprises together", "Single crop", "No interaction", "Unrelated"], correct: 0 }
   ],
   hard: [
-    { q: "What is the relationship between cation exchange capacity (CEC) and soil fertility?", options: ["High CEC allows better nutrient retention", "CEC has no effect on fertility", "Low CEC means higher fertility", "Only clay soils have CEC"], correct: 0 },
-    { q: "How does mycorrhizal colonization affect phosphorus availability?", options: ["Fungi extend root reach to access more phosphorus", "Reduces phosphorus availability", "Phosphorus doesn't need mycorrhizae", "Only affects nitrogen"], correct: 0 },
-    { q: "What is the SORAL system?", options: ["Soil, Organic, Regenerative, Amendment, Layering framework", "A soil texture classification", "A pest management technique", "A plant naming system"], correct: 0 },
-    { q: "How does biological pest management utilize predator-prey ratios?", options: ["Maintains population balance to control pests naturally", "Eliminates all predators", "Ignores ecological relationships", "Focuses only on prey"], correct: 0 },
-    { q: "What is the relationship between soil aggregation and water infiltration?", options: ["Good aggregation increases infiltration and reduces runoff", "Aggregation decreases infiltration", "Water doesn't relate to aggregation", "Only affects clay soils"], correct: 0 },
-    { q: "How do allelopathic compounds affect polyculture systems?", options: ["Must be managed to prevent crop interference", "Don't exist in natural systems", "Always beneficial", "Only negative effects"], correct: 0 },
-    { q: "What is the significance of the O:H ratio in compost?", options: ["Indicates microbial activity efficiency", "Measures plant height", "Determines soil pH only", "Has no significance"], correct: 0 },
-    { q: "How does root exudation support soil food webs?", options: ["Plants feed soil organisms through root secretions", "Roots absorb organisms", "Exudates harm soil life", "No interaction occurs"], correct: 0 },
-    { q: "What role does silica play in plant immunity?", options: ["Strengthens cell walls and enhances disease resistance", "Only decorative in plants", "Reduces immunity", "Found only in sand"], correct: 0 },
-    { q: "How do volatile organic compounds (VOCs) enhance plant communication?", options: ["Plants signal each other about pest attacks through VOCs", "VOCs are only from decomposition", "Plants don't communicate", "Only humans produce VOCs"], correct: 0 },
-    { q: "What is the significance of the microbial quotient (qCO2)?", options: ["Indicates soil microbial efficiency and health", "Only measures carbon content", "Determines soil pH", "Has no practical use"], correct: 0 },
-    { q: "How does dormancy breaking relate to soil temperature fluctuations?", options: ["Temperature cycles trigger seed germination and bud break", "Seeds don't respond to temperature", "Constant temperature is ideal", "Only light matters"], correct: 0 },
-    { q: "What is the role of humic substances in soil?", options: ["Improve water retention, CEC, and nutrient availability", "Only color soil", "Reduce fertility", "Attract pests"], correct: 0 },
-    { q: "How does the rhizosphere differ from bulk soil?", options: ["Rhizosphere is nutrient-rich zone around roots with intense microbial activity", "They're identical", "Rhizosphere has no organisms", "Bulk soil is more active"], correct: 0 },
-    { q: "What is the principle behind 'nutrient density farming'?", options: ["Growing plants with higher mineral and vitamin content through biology", "Using more chemical fertilizers", "Planting only one crop", "Reducing harvest"], correct: 0 },
-    { q: "How do biochar amendments affect soil long-term?", options: ["Improve water retention, provide habitat, and store carbon", "Only temporary effect", "Harm soil organisms", "Increase acidity"], correct: 0 },
-    { q: "What is vertical stratification in forest gardens?", options: ["Utilizing different height zones for different plant types", "Stacking soil", "Horizontal planting only", "Tree height has no effect"], correct: 0 },
-    { q: "How does the Sechelt Peninsula method optimize small-space farming?", options: ["Uses slope topography and water management for maximum production", "Ignores natural features", "Only flat land works", "Requires machinery"], correct: 0 },
-    { q: "What role does silicate weathering play in nutrient cycling?", options: ["Gradually releases minerals from rock for long-term fertility", "Doesn't affect fertility", "Removes nutrients", "Only in young soils"], correct: 0 },
-    { q: "How do polyculture systems increase yield stability?", options: ["Diverse crops reduce total loss from any single pest/weather event", "Single crops are more stable", "Diversity increases risk", "Only affects price"], correct: 0 }
+    { q: "CEC and soil fertility?", options: ["High CEC retains nutrients", "No effect", "Low = fertile", "Clay soils only"], correct: 0 },
+    { q: "Mycorrhizal and phosphorus?", options: ["Fungi access more P", "Reduces P", "Doesn't need", "Only N"], correct: 0 },
+    { q: "Biological pest ratios?", options: ["Population balance controls pests", "Eliminate predators", "All compete equally", "Prey only"], correct: 0 },
+    { q: "Aggregation and infiltration?", options: ["Good aggregation increases infiltration", "Decreases", "Water unrelated", "Clay only"], correct: 0 },
+    { q: "Allelopathic compounds?", options: ["Must manage prevent interference", "Don't exist", "Always beneficial", "Only negative"], correct: 0 },
+    { q: "O:H ratio in compost?", options: ["Indicates microbial activity", "Plant height", "Determines pH", "No significance"], correct: 0 },
+    { q: "Root exudation supports?", options: ["Plants feed soil organisms", "Roots absorb", "Harms life", "No interaction"], correct: 0 },
+    { q: "Silica in plant immunity?", options: ["Strengthens walls, resists disease", "Only decoration", "Reduces immunity", "Sand only"], correct: 0 },
+    { q: "VOCs enhance communication?", options: ["Signal pest attacks", "Only decomposition", "Plants don't communicate", "Humans only"], correct: 0 },
+    { q: "Microbial quotient (qCO2)?", options: ["Indicates efficiency and health", "Carbon content", "Determines pH", "No use"], correct: 0 },
+    { q: "Dormancy and temperature?", options: ["Cycles trigger germination", "Seeds don't respond", "Constant ideal", "Light only"], correct: 0 },
+    { q: "Humic substances?", options: ["Improve retention, CEC, nutrients", "Only color", "Reduce fertility", "Attract pests"], correct: 0 },
+    { q: "Rhizosphere vs bulk soil?", options: ["Nutrient-rich, intense microbial activity", "Identical", "No organisms", "Bulk more active"], correct: 0 },
+    { q: "'Nutrient density farming'?", options: ["Grow higher mineral content plants", "More chemicals", "One crop", "Reduce harvest"], correct: 0 },
+    { q: "Biochar amendments?", options: ["Improve retention, habitat, carbon", "Temporary", "Harm organisms", "Increase acidity"], correct: 0 },
+    { q: "Vertical stratification?", options: ["Different heights for different plants", "Stack soil", "Horizontal only", "No effect"], correct: 0 },
+    { q: "Silicate weathering?", options: ["Releases minerals for fertility", "Doesn't affect", "Removes nutrients", "Young soils only"], correct: 0 },
+    { q: "Polycultures increase stability?", options: ["Diverse crops reduce total loss", "Single crops stable", "Diversity increases risk", "Price only"], correct: 0 },
+    { q: "Aquaculture stocking?", options: ["Density affects water quality", "No limit", "More = better", "Numbers irrelevant"], correct: 0 },
+    { q: "Integrated systems ROI?", options: ["Multiple incomes faster return", "Single slow", "Never profitable", "Only large"], correct: 0 }
   ],
   ultra: [
-    { q: "What is the theoretical basis for using the fractal nature of soil pores in drainage design?", options: ["Self-similar patterns at multiple scales optimize water movement", "Fractals only exist in mathematics", "Soil pores are uniform", "Drainage is linear"], correct: 0 },
-    { q: "How does the microbial loop regulate nutrient cycling efficiency in permaculture systems?", options: ["Recycling through bacteria and protozoa minimizes nutrient leaching", "Microbes don't affect cycling", "Linear nutrient pathways are efficient", "Only plants cycle nutrients"], correct: 0 },
-    { q: "What is the ecological niche partitioning strategy in guild design?", options: ["Different plants exploit different resources to maximize productivity", "All plants compete equally", "Resources don't matter", "Similar plants work best together"], correct: 0 },
-    { q: "How does mycorrhizal networking affect inter-plant communication and resource transfer?", options: ["Fungal networks enable plant-to-plant nutrient and signal transfer", "Plants are isolated from each other", "Networking inhibits growth", "Only animals transfer resources"], correct: 0 },
-    { q: "What is the significance of phenolic compounds in permaculture pest management?", options: ["Plant-produced compounds deter pests and indicate plant health status", "Phenols are harmful to plants", "Only used in medicine", "No role in defense"], correct: 0 },
-    { q: "How does the carbon sequestration potential relate to soil aggregate stability?", options: ["Stable aggregates protect carbon from decomposition", "Carbon escapes regardless", "Aggregates don't affect carbon", "Only surface carbon matters"], correct: 0 },
-    { q: "What role does the Eh-pH diagram play in anaerobic zone management?", options: ["Predicts soil chemical conditions for water management design", "Only theoretical", "Doesn't apply to farming", "pH is the only factor"], correct: 0 },
-    { q: "How do enzymatic signatures indicate soil microbial community composition?", options: ["Enzyme activity patterns reflect microbial types and system health", "Enzymes don't vary", "Only microbes matter", "Not measurable"], correct: 0 },
-    { q: "What is the evolutionary advantage of polyploidy in crop selection?", options: ["Increased genetic diversity and stress tolerance", "Always weakens plants", "Only one genome is ideal", "No effect on fitness"], correct: 0 },
-    { q: "How does the trophic cascade affect weed suppression in perennial polycultures?", options: ["Predator-prey relationships control herbivorous pest populations", "Cascades don't exist", "All species compete equally", "Only predators help"], correct: 0 },
-    { q: "What is the principle of syntrophic relationships in permaculture microbiology?", options: ["Organisms cooperate where one's waste is another's resource", "All organisms compete", "No cooperation occurs", "Waste is wasted"], correct: 0 },
-    { q: "How does the solubility product constant (Ksp) affect micronutrient availability?", options: ["Determines which forms of nutrients remain dissolved and available", "Doesn't affect availability", "All nutrients equally available", "Only nitrogen relevant"], correct: 0 },
-    { q: "What is the role of the Soil Organic Matter (SOM) accumulation curve in succession planning?", options: ["Predicts long-term soil development and system maturation", "SOM doesn't accumulate", "Curve is linear always", "Irrelevant to planning"], correct: 0 },
-    { q: "How do protease and phosphatase enzyme concentrations indicate nitrogen and phosphorus cycling rates?", options: ["Enzyme levels reflect microbial nutrient cycling activity rates", "Enzymes don't indicate activity", "Only one enzyme matters", "Not correlative"], correct: 0 },
-    { q: "What is the significance of the critical pH for aluminum toxicity in acid soils?", options: ["Below pH 5.0, aluminum becomes soluble and toxic to plants", "Aluminum is always toxic", "pH doesn't affect aluminum", "Only in alkaline soil"], correct: 0 },
-    { q: "How does quorum sensing in soil bacteria affect nutrient availability?", options: ["Bacterial populations coordinate metabolic activities based on density signals", "Bacteria work independently", "Population size irrelevant", "Only in human systems"], correct: 0 },
-    { q: "What is the theoretical basis for using microbial biomass carbon (MBC) as a soil health indicator?", options: ["MBC reflects living microbial mass and system productivity potential", "Biomass doesn't indicate health", "Only chemical content matters", "Too complex to use"], correct: 0 },
-    { q: "How does the redox potential gradient in wetland zones optimize nutrient transformation?", options: ["Anaerobic and aerobic zones enable sequential nutrient cycling", "Gradients are irrelevant", "Only aerobic is useful", "No transformation occurs"], correct: 0 },
-    { q: "What is the significance of arbuscular-ectomycorrhizal transitions in forest garden succession?", options: ["Different fungi dominate at different system maturity stages", "Fungi don't change", "Only one type exists", "Transitions prevent succession"], correct: 0 },
-    { q: "How do lignin and cellulose decomposition rates affect long-term carbon storage strategy?", options: ["Different decomposition rates allow strategic placement of materials", "All materials decompose equally", "Rates don't matter", "Storage isn't possible"], correct: 0 }
+    { q: "Fractal soil pores?", options: ["Self-similar patterns optimize water", "Math only", "Uniform pores", "Linear drainage"], correct: 0 },
+    { q: "Microbial loop cycles?", options: ["Minimizes nutrient leaching", "Microbes irrelevant", "Linear efficient", "Plants only"], correct: 0 },
+    { q: "Niche partitioning?", options: ["Plants exploit different resources", "All compete equally", "Resources don't matter", "Similar best"], correct: 0 },
+    { q: "Mycorrhizal networking?", options: ["Enables plant nutrient transfer", "Isolated", "Inhibits growth", "Animals only"], correct: 0 },
+    { q: "Phenolic compounds?", options: ["Deter pests indicate health", "Harm plants", "Medicine only", "No defense"], correct: 0 },
+    { q: "Carbon sequestration aggregates?", options: ["Stable aggregates protect carbon", "Escapes", "Aggregates irrelevant", "Surface only"], correct: 0 },
+    { q: "Eh-pH diagram?", options: ["Predicts soil conditions", "Theoretical only", "Doesn't apply", "pH only"], correct: 0 },
+    { q: "Enzymatic signatures?", options: ["Indicate microbial types and health", "Enzymes constant", "Microbes only", "Not measurable"], correct: 0 },
+    { q: "Polyploidy advantage?", options: ["Genetic diversity stress tolerance", "Weakens", "One genome ideal", "No fitness"], correct: 0 },
+    { q: "Trophic cascade weeds?", options: ["Predator-prey controls pests", "No cascades", "All compete", "Predators only"], correct: 0 },
+    { q: "Syntrophic relationships?", options: ["Cooperate waste is resource", "All compete", "No cooperation", "Waste wasted"], correct: 0 },
+    { q: "Solubility constant (Ksp)?", options: ["Determines dissolved nutrient forms", "No effect", "All equal", "Nitrogen only"], correct: 0 },
+    { q: "SOM accumulation curve?", options: ["Predicts long-term development", "No accumulation", "Always linear", "Irrelevant"], correct: 0 },
+    { q: "Enzyme concentrations?", options: ["Reflect cycling activity", "Don't indicate", "One only", "Not correlative"], correct: 0 },
+    { q: "Critical pH aluminum?", options: ["Below 5.0 becomes soluble toxic", "Always toxic", "No effect", "Alkaline only"], correct: 0 },
+    { q: "Quorum sensing bacteria?", options: ["Coordinate by density signals", "Work independently", "Size irrelevant", "Humans only"], correct: 0 },
+    { q: "Microbial biomass carbon?", options: ["Reflects living mass potential", "Doesn't indicate health", "Chemistry only", "Too complex"], correct: 0 },
+    { q: "Redox potential gradient?", options: ["Anaerobic/aerobic enable cycling", "Irrelevant", "Aerobic only", "No transformation"], correct: 0 },
+    { q: "Arbuscular-ectomycorrhizal?", options: ["Different fungi at stages", "Don't change", "One only", "Prevent succession"], correct: 0 },
+    { q: "Lignin decomposition?", options: ["Different rates allow placement", "All equal", "Rates irrelevant", "Impossible"], correct: 0 }
   ]
 };
 
 let currentQuiz = null;
 let currentQuestion = 0;
 let quizAnswers = [];
-let quizStarted = false;
 
 function startQuiz(level) {
   currentQuiz = level;
   currentQuestion = 0;
   quizAnswers = new Array(quizData[level].length).fill(-1);
-  quizStarted = true;
   
   document.getElementById('quizSelector').style.display = 'none';
   document.getElementById('quizContainer').style.display = 'block';
   document.getElementById('quizResults').style.display = 'none';
   
   showQuestion();
-  showToast(`Starting ${level.toUpperCase()} quiz! 🚀`);
+  showToast(`🚀 ${level.toUpperCase()} quiz started!`);
 }
 
 function showQuestion() {
@@ -2170,31 +1610,35 @@ function showQuestion() {
   const question = quiz[currentQuestion];
   
   document.getElementById('questionText').textContent = question.q;
-  document.getElementById('currentQuestion').textContent = currentQuestion + 1;
-  document.getElementById('totalQuestions').textContent = quiz.length;
+  document.getElementById('currentQ').textContent = currentQuestion + 1;
+  document.getElementById('totalQ').textContent = quiz.length;
   
   const progress = ((currentQuestion + 1) / quiz.length) * 100;
   document.getElementById('progressFill').style.width = progress + '%';
   
-  const optionsGrid = document.getElementById('optionsGrid');
-  optionsGrid.innerHTML = '';
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
   
   question.options.forEach((option, index) => {
     const btn = document.createElement('button');
-    btn.className = 'option';
-    
+    btn.className = 'card';
+    btn.style.cursor = 'pointer';
+    btn.style.textAlign = 'left';
+    btn.style.padding = '12px';
+    btn.style.marginBottom = '0';
+    btn.style.borderTop = 'none';
+    btn.style.border = '2px solid var(--border)';
     if (quizAnswers[currentQuestion] === index) {
-      btn.classList.add('selected');
+      btn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-light))';
+      btn.style.color = 'white';
+      btn.style.border = '2px solid var(--primary)';
     }
-    
-    btn.innerHTML = `<span>${option}</span>`;
+    btn.textContent = option;
     btn.onclick = () => selectAnswer(index);
-    optionsGrid.appendChild(btn);
+    grid.appendChild(btn);
   });
   
-  // Update navigation buttons
-  document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
-  document.getElementById('nextBtn').textContent = currentQuestion === quiz.length - 1 ? 'Finish Quiz' : 'Next →';
+  document.getElementById('nextBtn').textContent = currentQuestion === quiz.length - 1 ? '✅ Finish' : 'Next →';
 }
 
 function selectAnswer(index) {
@@ -2204,7 +1648,6 @@ function selectAnswer(index) {
 
 function nextQuestion() {
   const quiz = quizData[currentQuiz];
-  
   if (currentQuestion < quiz.length - 1) {
     currentQuestion++;
     showQuestion();
@@ -2213,192 +1656,50 @@ function nextQuestion() {
   }
 }
 
-function previousQuestion() {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    showQuestion();
-  }
-}
-
 function finishQuiz() {
   const quiz = quizData[currentQuiz];
-  let correctCount = 0;
+  let correct = 0;
   
   quizAnswers.forEach((answer, index) => {
-    if (answer === quiz[index].correct) {
-      correctCount++;
-    }
+    if (answer === quiz[index].correct) correct++;
   });
   
-  const percentage = Math.round((correctCount / quiz.length) * 100);
+  const percentage = Math.round((correct / quiz.length) * 100);
   
-  // Show results
   document.getElementById('quizContainer').style.display = 'none';
   document.getElementById('quizResults').style.display = 'block';
-  
   document.getElementById('scoreText').textContent = percentage + '%';
   
-  let message = '';
-  if (percentage === 100) {
-    message = 'Perfect Score! 🎓 You\'re a permaculture expert!';
-  } else if (percentage >= 80) {
-    message = 'Excellent work! 🌟 Strong permaculture knowledge!';
-  } else if (percentage >= 60) {
-    message = 'Good job! 👍 Keep learning and exploring!';
-  } else if (percentage >= 40) {
-    message = 'Not bad! 📚 Review the material and try again!';
-  } else {
-    message = 'Keep studying! 💪 Permaculture takes time to master!';
-  }
+  let msg = '';
+  if (percentage === 100) msg = 'Perfect Score! 🏆 You are an expert!';
+  else if (percentage >= 80) msg = 'Excellent! 🌟 Great knowledge!';
+  else if (percentage >= 60) msg = 'Good job! 👍 Keep learning!';
+  else if (percentage >= 40) msg = 'Not bad! 📚 Study more!';
+  else msg = 'Keep practicing! 💪 You\'ll improve!';
   
-  document.getElementById('scoreMessage').textContent = message;
-  
-  const summary = document.getElementById('resultsSummary');
-  summary.innerHTML = `
-    <div class="summary-item">
-      <div class="summary-label">Correct Answers</div>
-      <div class="summary-value">${correctCount}/${quiz.length}</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-label">Difficulty</div>
-      <div class="summary-value">${currentQuiz.toUpperCase()}</div>
-    </div>
-    <div class="summary-item">
-      <div class="summary-label">Time Spent</div>
-      <div class="summary-value">Quiz</div>
-    </div>
-  `;
-  
-  showToast(`Quiz finished! Score: ${percentage}%`);
-}
-
-function exitQuiz() {
-  if (confirm('Are you sure? Your progress will be lost.')) {
-    backToQuizzes();
-  }
+  document.getElementById('scoreMessage').textContent = msg;
+  showToast(`✅ Quiz complete! ${percentage}%`);
 }
 
 function backToQuizzes() {
-  quizStarted = false;
   currentQuiz = null;
   currentQuestion = 0;
-  quizAnswers = [];
-  
   document.getElementById('quizSelector').style.display = 'grid';
   document.getElementById('quizContainer').style.display = 'none';
   document.getElementById('quizResults').style.display = 'none';
+}
+
+// Toast
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
   
-  showToast('Back to quiz selection!');
-}
-</script>
-
-
-<script>
-const knowledgePages = {
-  permaculture:{title:"🌱 Permaculture — Complete Guide",intro:"Permaculture is a design approach for creating productive systems that work with natural patterns, conserve resources and connect different parts of a farm.",sections:[
-    ["What is permaculture?","Permaculture uses observation, ecological thinking and practical design to create resilient human-managed systems."],
-    ["Ethics","Earth Care, People Care and Fair Share are the commonly taught ethics."],
-    ["Principles","Major ideas include observing and interacting, catching and storing energy, obtaining a yield, using renewable resources, producing no waste, designing from patterns to details, integrating rather than separating, and using small and slow solutions."],
-    ["Zones 0–5","Zones organize activities by how frequently they are visited or managed. The exact layout should be adapted to the site."],
-    ["Food forests","A food forest combines useful plants at different heights, such as canopy trees, smaller trees, shrubs, herbs, groundcovers, climbers and root crops."],
-    ["Guilds","Plant guilds combine species with complementary functions such as food production, soil cover, pollinator support and nutrient cycling."],
-    ["Water and soil","Mulch, healthy organic matter, contour-based planning and suitable water-harvesting features can help improve water and soil management."],
-    ["1-acre example","A small farm can connect a home/work area, kitchen garden, orchard, food forest, compost area, water feature, habitat and paths."]
-  ]},
-  organic:{title:"🌾 Organic Farming — Complete Guide",intro:"Organic farming emphasizes biological processes, soil health and ecological management while following the applicable organic standard.",sections:[
-    ["Soil fertility","Compost, suitable organic manures, crop residues, green manures and crop rotations can contribute organic matter and nutrients."],
-    ["Crop rotation","Rotating crops diversifies nutrient demand and can help break some pest and disease cycles."],
-    ["Pest management","Prevention, resistant varieties, beneficial organisms, sanitation, mechanical methods and permitted biological controls can be combined."],
-    ["Weed management","Mulching, cover crops, timely cultivation and crop competition are common approaches."],
-    ["Advantages and limitations","Organic systems can support soil biology and biodiversity but require careful nutrient, pest, labour and certification management."]
-  ]},
-  regenerative:{title:"🌍 Regenerative Farming — Complete Guide",intro:"Regenerative farming is a broad approach focused on improving soil condition, biodiversity, water cycles and farm resilience.",sections:[
-    ["Soil cover","Living plants and mulch protect soil from erosion, temperature extremes and excessive evaporation."],
-    ["Reduced disturbance","Reducing unnecessary disturbance can protect soil structure and organisms when appropriate for the farm."],
-    ["Diversity","Rotations, intercropping, cover crops and perennial plants increase biological diversity."],
-    ["Water cycle","Healthy soil structure and organic matter can improve infiltration and water-holding capacity."],
-    ["Livestock","Well-managed grazing can contribute nutrient cycling while allowing vegetation recovery."]
-  ]},
-  agroforestry:{title:"🌳 Agroforestry — Complete Guide",intro:"Agroforestry integrates trees or shrubs with crops, livestock or both.",sections:[
-    ["Uses of trees","Trees can provide food, timber, shade, wind protection, habitat, biomass and other products."],
-    ["Systems","Examples include alley cropping, silvopasture, multistory systems and tree-based boundaries."],
-    ["Planning","Consider mature size, shade, root competition, water, harvesting access and crop needs."],
-    ["Benefits and trade-offs","Trees can diversify production and habitat but need space, management and long-term planning."]
-  ]},
-  water:{title:"💧 Water Management — Complete Guide",intro:"Farm water management aims to capture rainfall, reduce unnecessary runoff, improve infiltration and deliver water efficiently.",sections:[
-    ["Rainwater harvesting","Roof runoff can be collected into suitable storage or directed to safe infiltration areas."],
-    ["Swales","Swales can slow and spread surface water when correctly designed for local slope, soil and rainfall."],
-    ["Farm ponds","Ponds can store water and provide habitat, but construction, overflow, safety and local requirements need careful planning."],
-    ["Drip irrigation","Drip systems deliver water near roots and can reduce unnecessary wetting when correctly designed."],
-    ["Mulching","Organic mulch can reduce evaporation and moderate soil temperature."]
-  ]},
-  soil:{title:"🌍 Soil Health — Complete Guide",intro:"Healthy soil is a living system containing minerals, organic matter, water, air and many organisms.",sections:[
-    ["Soil types","Sandy, loamy and clayey soils differ in drainage, nutrient retention and cultivation behaviour."],
-    ["Soil pH","pH affects nutrient availability. Soil testing is better than guessing before major amendments."],
-    ["Organic matter","Compost, plant residues, roots and suitable manures can contribute organic matter."],
-    ["Compost","Good compost depends on suitable materials, moisture, air and adequate decomposition time."],
-    ["Vermicompost","Earthworms process suitable organic material into a useful soil amendment."],
-    ["Soil protection","Keep soil covered, avoid unnecessary compaction and maintain living roots where practical."]
-  ]},
-  biodiversity:{title:"🐝 Biodiversity — Complete Guide",intro:"Farm biodiversity includes crops, trees, soil organisms, insects, birds and other organisms.",sections:[
-    ["Pollinators","Bees and other pollinators benefit from suitable flowering plants, shelter and safe habitat."],
-    ["Beneficial insects","Predatory and parasitic insects can help regulate some pests."],
-    ["Birds","Trees and shrubs can provide food and shelter for birds."],
-    ["Live fencing","Living fences can provide boundaries, biomass, habitat and sometimes food or fodder."],
-    ["Natural pest balance","The aim can be to keep damaging pests below harmful levels rather than eliminate every insect."]
-  ]},
-  planning:{title:"🏡 Farm Planning — Complete Guide",intro:"A farm plan connects land, water, crops, buildings, paths, animals, storage and daily work.",sections:[
-    ["Observe first","Map boundaries, slope, sun, wind, existing vegetation, soil, water movement and access."],
-    ["Plan water","Water placement strongly influences productive areas and paths. Plan safe overflow and maintenance."],
-    ["Paths","Efficient paths reduce unnecessary movement and protect growing areas from compaction."],
-    ["Zoning","Place frequently visited or intensively managed activities closer to the main living/work area."],
-    ["Closed-loop thinking","Suitable residues can become compost or mulch and properly managed manure can return nutrients to soil."]
-  ]},
-  natural:{title:"🌿 Natural Farming — Complete Guide",intro:"Natural farming generally emphasizes biological processes, soil cover, locally available resources and reduced dependence on synthetic inputs.",sections:[
-    ["Soil cover","Protect soil with living plants, residues or suitable mulch."],
-    ["Biological activity","Roots and organic matter provide habitat and food for soil organisms."],
-    ["Farm resources","Suitable plant residues and farm manures can be recycled."],
-    ["Observation","Monitor soil moisture, crop growth and pests before deciding on interventions."]
-  ]},
-  integrated:{title:"🐄 Integrated Farming — Complete Guide",intro:"Integrated farming connects different farm enterprises so outputs or by-products from one part can become useful inputs for another.",sections:[
-    ["Crops and livestock","Suitable plant residues can sometimes support animals while properly managed manure returns nutrients to soil."],
-    ["Fish systems","Ponds can support fish production and water storage when designed appropriately."],
-    ["Poultry","Poultry can provide eggs, meat and manure, with housing and feed managed responsibly."],
-    ["Compost cycle","Suitable organic wastes can be composted and returned to growing areas."]
-  ]},
-  hydroponics:{title:"💧 Hydroponics — Complete Guide",intro:"Hydroponics grows plants without conventional soil by supplying water, oxygen and dissolved nutrients to roots.",sections:[
-    ["Systems","Common systems include deep-water culture, nutrient film technique, drip systems and ebb-and-flow."],
-    ["Nutrients and pH","Plants need balanced mineral nutrients and an appropriate root-zone environment."],
-    ["Advantages","Hydroponics can use space efficiently and provide controlled growing conditions."],
-    ["Limitations","Many systems need pumps or electricity, monitoring and careful water and nutrient management."],
-    ["Crops","Leafy greens and herbs are commonly grown, depending on the system."]
-  ]},
-  aquaponics:{title:"🐟 Aquaponics — Complete Guide",intro:"Aquaponics connects fish culture and hydroponic plant production in a recirculating water system.",sections:[
-    ["How it works","Fish waste is processed by microorganisms; plants use nutrients and help clean circulating water."],
-    ["Components","Systems may include fish tanks, biological filtration, plant beds, pumps, plumbing and aeration."],
-    ["Balance","Fish stocking, feed, plants, oxygen, temperature and water chemistry must remain suitable."],
-    ["Advantages and limitations","It can combine two forms of production and recycle water but is more technically complex than ordinary soil growing."]
-  ]}
-};
-
-function openKnowledgePage(key){
-  const page=knowledgePages[key];
-  if(!page)return;
-  const content=document.getElementById("knowledgePageContent");
-  content.innerHTML="<h1>"+page.title+"</h1><p><strong>"+page.intro+"</strong></p>"+
-    page.sections.map(s=>"<h2>"+s[0]+"</h2><p>"+s[1]+"</p>").join("");
-  document.getElementById("knowledgePage").classList.add("open");
-  document.getElementById("knowledgePage").setAttribute("aria-hidden","false");
-  document.body.style.overflow="hidden";
-}
-function closeKnowledgePage(){
-  document.getElementById("knowledgePage").classList.remove("open");
-  document.getElementById("knowledgePage").setAttribute("aria-hidden","true");
-  document.body.style.overflow="";
-}
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./service-worker.js");
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
 }
 </script>
 
