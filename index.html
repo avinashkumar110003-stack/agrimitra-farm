@@ -1702,9 +1702,11 @@ function showToast(msg) {
     setTimeout(() => toast.remove(), 300);
   }, 2500);
 }
+</script>
+
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./service-worker.js");
+  navigator.serviceWorker.register("./service-worker.js").catch(() => {});
 }
 </script>
 
